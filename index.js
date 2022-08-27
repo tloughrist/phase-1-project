@@ -6,32 +6,33 @@ const printData = function (data) {
     list.appendChild(listItem);    
 };
 
-const dataFetch = function (url) {
-    console.log(url);
-    fetch(url, {
-        headers: {
-            Accept: "application/json"
-        }
-    })
-    .then((response) => response.json())
-    .then(function(data) {
-        for (const [key, value] of Object.entries(data)) {
-            console.log(`${key}: ${value}`);
-            printData(`${key}: ${value}`);
-        }
-        /*
-        let keys = Object.keys(data);
-        console.log(keys);
-        let values = Object.values(data);
-        for(let i = 0; i < keys.length; i++) {
-            printData(`${keys[i]}:${values[i]}`);
-        }
-        */
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-      });
+const printImg = function (data) {
+    const listItem = document.createElement('li');
+    const cardImg = document.createElement('img');
+    cardImg.src = `https://static.nrdbassets.com/v1/large/${data}.jpg`
+    listItem.append(cardImg);
+    list.appendChild(listItem);    
 };
 
-dataFetch("https://www.dnd5eapi.co/api/ability-scores/cha");
-printData('hello')
+fetch("https://netrunnerdb.com/api/2.0/public/cards", {
+    headers: {
+        Accept: "application/json"
+    }
+})
+.then((response) => response.json())
+.then(function(data) {
+    console.log(data.data);
+    let randCardNum = Math.floor(Math.random() * (data.data.length - 1));
+    const card = data.data[randCardNum];
+    const keys = (Object.keys(card));
+    const values = (Object.values(card));
+    for (let i = 0; i < keys.length; i++) {
+        printData(`${keys[i]}: ${values[i]}`);
+    }
+    printImg(card.code);
+})
+.catch((error) => {
+    console.error('Error:', error);
+});
+
+//img url template: 'https://static.nrdbassets.com/v1/large/{code}.jpg'
