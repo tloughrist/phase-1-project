@@ -1,38 +1,44 @@
-const list = document.getElementById('json_data');
+let cards = [];
 
-const printData = function (data) {
-    const listItem = document.createElement('li');
-    listItem.textContent = data;
-    list.appendChild(listItem);    
-};
-
-const printImg = function (data) {
-    const listItem = document.createElement('li');
-    const cardImg = document.createElement('img');
-    cardImg.src = `https://static.nrdbassets.com/v1/large/${data}.jpg`
-    listItem.append(cardImg);
-    list.appendChild(listItem);    
-};
-
-fetch("https://netrunnerdb.com/api/2.0/public/cards", {
+//fetches the cards from netrunnerdb
+const getCards = fetch("https://netrunnerdb.com/api/2.0/public/cards", {
     headers: {
         Accept: "application/json"
     }
-})
+    })
 .then((response) => response.json())
 .then(function(data) {
-    console.log(data.data);
-    let randCardNum = Math.floor(Math.random() * (data.data.length - 1));
-    const card = data.data[randCardNum];
-    const keys = (Object.keys(card));
-    const values = (Object.values(card));
-    for (let i = 0; i < keys.length; i++) {
-        printData(`${keys[i]}: ${values[i]}`);
-    }
-    printImg(card.code);
+    cards = data.data;
+    //console.log(cards);
 })
 .catch((error) => {
     console.error('Error:', error);
+})
+
+//returns a random index number for a given array
+function randArrayItem(array) {
+    let randIndex = Math.floor(Math.random() * (array.length - 1));
+    return randIndex;
+};
+
+//appends a card's image to the cardblock element
+function printImg(cardCode) {
+    const cardImg = document.createElement('img');
+    cardImg.src = `https://static.nrdbassets.com/v1/large/${cardCode}.jpg`
+    cardImg.id = 'randomCard'
+    document.getElementById('cardblock').append(cardImg);
+};
+
+//waits until the getCards fetch is complete
+Promise.all([getCards]).then(function () {
+    //randomly selects a card and calls printImg on it
+    printImg(cards[randArrayItem(cards)].code);
+    document.getElementById('randomBtn').addEventListener('click', () => {
+        document.getElementById('randomCard').remove();
+        printImg(cards[randArrayItem(cards)].code);
+    })
 });
 
-//img url template: 'https://static.nrdbassets.com/v1/large/{code}.jpg'
+/*
+
+*/
