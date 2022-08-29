@@ -71,10 +71,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('search').appendChild(newDeckField);
         document.getElementById('search').appendChild(newDeckCreateBtn);
-    });
+        
+        //submit new collection
+        document.getElementById('new-deck-create-btn').addEventListener('click', (e) => {
+            e.preventDefault();
 
-    //submit new collection
-    
+
+            
+            document.getElementById('new-deck-name-input').remove();
+            document.getElementById('new-deck-create-btn').remove();
+        })
+    });
     });
 
     const collectionFindSelect = document.querySelector('#collection-select');
