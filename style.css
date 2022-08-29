@@ -88,10 +88,6 @@ body {
     opacity: .8;
   }
   
-  .add-toy-form {
-    width: 80%
-  }
-  
   .submit {
     position: relative;
     background-color: #e04b52;

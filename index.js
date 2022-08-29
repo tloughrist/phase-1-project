@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById(`card${startCard.code}`).id = "randomCard";
     
     //randomly selects a card and calls makeCardBox on it on button click
-    document.getElementById('randomBtn').addEventListener('click', () => {
+    document.getElementById('randomBtn').addEventListener('click', (e) => {
+        e.preventDefault();
         //remove old boxes
         const cardBoxes = document.querySelectorAll('.card-box');
         cardBoxes.forEach(box => {
@@ -27,8 +28,24 @@ document.addEventListener('DOMContentLoaded', () => {
         let cardArray = cardTypeFilter(factionFilter(cards));
         let newRandCard = cardArray[randArrayItem(cardArray)];
         makeCardBox(newRandCard);
-        document.getElementById(`card${newRandCard.code}`).id = "randomCard";
     })
+
+    //searches for cards and calls makeCardBox on them on button click
+    document.getElementById('searchBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        //remove old boxes
+        const cardBoxes = document.querySelectorAll('.card-box');
+        cardBoxes.forEach(box => {
+            box.remove();
+        });
+        //populate with new boxes containing searched cards
+        let cardArray = searchFilter(cardTypeFilter(factionFilter(cards)));
+        cardArray.forEach(foundCard => {
+            makeCardBox(foundCard);
+        })
+    })
+
+
     });
 
     const collectionFindSelect = document.querySelector('#collection-select');
@@ -47,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     factionFindSelect.addEventListener('change', () => {
         selectedFaction = factionFindSelect.value;
-        console.log(selectedFaction);
     });
 
     cardTypeFindSelect.addEventListener('change', () => {
@@ -97,6 +113,16 @@ function cardTypeFilter(dataSet) {
         });
     }
 };
+
+function searchFilter(dataSet) {
+    if(document.querySelector('#card_name').value === undefined) {
+        return dataSet;
+    } else {
+        return dataSet.filter(function (el) {
+            return el.title.toLowerCase().includes(document.querySelector('#card_name').value.toLowerCase());
+        });
+    }
+}
 
 //returns a random index number for a given array
 function randArrayItem(array) {
