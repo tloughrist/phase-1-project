@@ -9,7 +9,7 @@
         <div id="banner">
             <img id="bannerImg" src="https://timloughrist.files.wordpress.com/2022/08/nr_logo-1.png">
         </div>
-        <div id="controls">
+        <div class="form-div" id="search-controls">
             <form id="search">
                 <select class="control" id="collection-select">
                     <option value="netrunnerdb">NetrunnerDB</option>
@@ -45,6 +45,16 @@
                 <input id="card_name" type="text" placeholder="Card name (optional)"></input>
                 <button class="control" id="searchBtn">search</button>
                 <button class="control" id="randomBtn">random</button>
+            </form>
+        </div>
+        <div class="form-div" id="collection-controls">
+            <form id="add_collection">
+                <select class="control" id="collection-select">
+                    <option value="new">Tes1</option>
+                    <option value="test">Test2</option>
+                </select>
+                <button class="control" id="displayBtn">display collection</button>
+                <button class="control" id="addBtn">create new collection</button>
             </form>
         </div>
         <div id="cardblock">

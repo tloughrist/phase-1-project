@@ -22,15 +22,22 @@ body {
     margin: 2rem;
   }
   
-  #controls {
+  .form-div {
     display: flex;
     justify-content: center;
-    background: rgb(203, 214, 255);
-    opacity: .8;
     height: 1.5rem;
     padding: .5rem;
   }
 
+  #search-controls {
+    background: rgb(203, 214, 255);
+    opacity: .8;
+  }
+  
+  #collection-controls {
+    background:rgb(91, 130, 131);
+    opacity: .8;
+  }
   .card-box {
     text-align: center;
     border: grey solid 1px;
