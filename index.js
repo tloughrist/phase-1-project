@@ -14,30 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
     //randomly selects a card and calls makeCardBox on it on page load
     let startCard = cards[randArrayItem(cards)];
     makeCardBox(startCard);
-    document.getElementById(`card${startCard.code}`).id = "randomCard";
     
     //randomly selects a card and calls makeCardBox on it on button click
     document.getElementById('randomBtn').addEventListener('click', (e) => {
         e.preventDefault();
-        //remove old boxes
-        const cardBoxes = document.querySelectorAll('.card-box');
-        cardBoxes.forEach(box => {
-            box.remove();
-        });
+        removeElements(document.querySelectorAll('.card-box'));
         //populate with new random box
         let cardArray = cardTypeFilter(factionFilter(cards));
         let newRandCard = cardArray[randArrayItem(cardArray)];
         makeCardBox(newRandCard);
-    })
+    });
 
     //searches for cards and calls makeCardBox on them on button click
     document.getElementById('searchBtn').addEventListener('click', (e) => {
         e.preventDefault();
-        //remove old boxes
-        const cardBoxes = document.querySelectorAll('.card-box');
-        cardBoxes.forEach(box => {
-            box.remove();
-        });
+        removeElements(document.querySelectorAll('.card-box'));
+        
         //populate with new boxes containing searched cards
         let cardArray = searchFilter(cardTypeFilter(factionFilter(cards)));
         if(cardArray.length > 100) {
@@ -52,11 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     //displays all the cards in a collection
     document.getElementById('displayBtn').addEventListener('click', (e) => {
         e.preventDefault();
-        //remove old boxes
-        const cardBoxes = document.querySelectorAll('.card-box');
-        cardBoxes.forEach(box => {
-            box.remove();
-        });
+        removeElements(document.querySelectorAll('.card-box'));
+
         //populate with new boxes containing all cards in collection
         if(cards.length > 100) {
             tooMany();
@@ -68,8 +57,24 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     //creates a new collection
+    document.getElementById('addBtn').addEventListener('click', (e) => {
+        e.preventDefault();
 
+        let newDeckField = document.createElement('input');
+        let newDeckCreateBtn = document.createElement('button');
 
+        newDeckField.id = 'new-deck-name-input';
+        newDeckCreateBtn.id = 'new-deck-create-btn';
+
+        newDeckField.placeholder = 'Deck name';
+        newDeckCreateBtn.textContent = 'Submit Deck';
+
+        document.getElementById('search').appendChild(newDeckField);
+        document.getElementById('search').appendChild(newDeckCreateBtn);
+    });
+
+    //submit new collection
+    
     });
 
     const collectionFindSelect = document.querySelector('#collection-select');
@@ -155,6 +160,13 @@ function tooMany() {
     let newRandCard = cardArray[randArrayItem(cardArray)];
     makeCardBox(newRandCard);
     alert("Too Many Cards to Display");
+};
+
+//removes current boxes
+function removeElements(elementArray) {
+    elementArray.forEach(e => {
+        e.remove();
+    });
 };
 
 //returns a random index number for a given array
