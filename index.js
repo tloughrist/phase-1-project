@@ -40,9 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         //populate with new boxes containing searched cards
         let cardArray = searchFilter(cardTypeFilter(factionFilter(cards)));
-        cardArray.forEach(foundCard => {
-            makeCardBox(foundCard);
-        })
+        if(cardArray.length > 100) {
+            tooMany();
+        } else {
+            cardArray.forEach(foundCard => {
+                makeCardBox(foundCard);
+            })
+        }
     })
 
     //displays all the cards in a collection
@@ -54,8 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             box.remove();
         });
         //populate with new boxes containing all cards in collection
-        if(collectionFindSelect.value === 'netrunnerdb') {
-            //populate with new random box
+        if(cards.length > 100) {
             tooMany();
         } else {
             cards.forEach(card => {
