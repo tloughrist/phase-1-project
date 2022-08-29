@@ -1,16 +1,48 @@
 let cards = [];
+let getCards = 0;
 
 let selectedCollection = "https://netrunnerdb.com/api/2.0/public/cards";
 let selectedFaction = "all";
 let selectedCardType = "any";
 
 document.addEventListener('DOMContentLoaded', () => {
+    cardFetch();
+
+    //waits until the getCards fetch is complete
+    Promise.all([getCards]).then(function () {
+    
+    //randomly selects a card and calls makeCardBox on it on page load
+    let startCard = cards[randArrayItem(cards)];
+    makeCardBox(startCard);
+    document.getElementById(`card${startCard.code}`).id = "randomCard";
+    
+    //randomly selects a card and calls makeCardBox on it on button click
+    document.getElementById('randomBtn').addEventListener('click', () => {
+        //remove old boxes
+        const cardBoxes = document.querySelectorAll('.card-box');
+        cardBoxes.forEach(box => {
+            box.remove();
+        });
+        //populate with new random box
+        let cardArray = cardTypeFilter(factionFilter(cards));
+        let newRandCard = cardArray[randArrayItem(cardArray)];
+        makeCardBox(newRandCard);
+        document.getElementById(`card${newRandCard.code}`).id = "randomCard";
+    })
+    });
+
     const collectionFindSelect = document.querySelector('#collection-select');
     const factionFindSelect = document.querySelector('#faction-select');
     const cardTypeFindSelect = document.querySelector('#card-type-select');
 
+    //this is mostly a placeholder until I build the json-server
     collectionFindSelect.addEventListener('change', () => {
-        selectedCollection = collectionFindSelect.value;
+        if(collectionFindSelect.value === 'netrunnerdb') {
+            selectedCollection = "https://netrunnerdb.com/api/2.0/public/cards";
+            cardFetch();
+        } else {
+            console.log(collectionFindSelect.value);
+        }
     });
 
     factionFindSelect.addEventListener('change', () => {
@@ -24,19 +56,47 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 //fetches the cards from netrunnerdb
-const getCards = fetch(`${selectedCollection}`, {
-    headers: {
-        Accept: "application/json"
+function cardFetch() {
+    getCards = fetch(`${selectedCollection}`, {
+        headers: {
+            Accept: "application/json"
+        }
+    })
+    .then((response) => response.json())
+    .then(function(data) {
+        cards = data.data;
+        console.log(cards);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    })
+};
+
+//filters cards from API base on faction
+function factionFilter(dataSet) {
+    if(selectedFaction === 'all') {
+        return dataSet;
+    } else if (selectedFaction === 'corp' || selectedFaction === 'runner') {
+        return dataSet.filter(function (el) {
+            return el.side_code === `${selectedFaction}`;
+        });
+    } else {
+        return dataSet.filter(function (el) {
+            return el.faction_code === `${selectedFaction}`
+        });
     }
-})
-.then((response) => response.json())
-.then(function(data) {
-    cards = data.data;
-    console.log(cards);
-})
-.catch((error) => {
-    console.error('Error:', error);
-})
+};
+
+//filters cards from API base on card type
+function cardTypeFilter(dataSet) {
+    if(selectedCardType === 'any') {
+        return dataSet;
+    } else {
+        return dataSet.filter(function (el) {
+            return el.type_code === `${selectedCardType}`;
+        });
+    }
+};
 
 //returns a random index number for a given array
 function randArrayItem(array) {
@@ -89,26 +149,6 @@ function makeCardBox(card) {
     //append the cardBox
     document.getElementById('cardblock').append(cardBox);
 };
-
-//waits until the getCards fetch is complete
-Promise.all([getCards]).then(function () {
-    //randomly selects a card and calls makeCardBox on it on page load
-    let startCard = cards[randArrayItem(cards)];
-    makeCardBox(startCard);
-    document.getElementById(`card${startCard.code}`).id = "randomCard";
-    
-    //randomly selects a card and calls makeCardBox on it on button click
-    document.getElementById('randomBtn').addEventListener('click', () => {
-        const cardBoxes = document.querySelectorAll('.card-box');
-        cardBoxes.forEach(box => {
-            box.remove();
-        });
-        let newRandCard = cards[randArrayItem(cards)];
-        makeCardBox(newRandCard);
-        document.getElementById(`card${newRandCard.code}`).id = "randomCard";
-    })
-});
-
 
 
 /*
