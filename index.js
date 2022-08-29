@@ -53,11 +53,20 @@ document.addEventListener('DOMContentLoaded', () => {
         cardBoxes.forEach(box => {
             box.remove();
         });
-        //populate with new boxes containing searched cards
-        cards.forEach(card => {
-            makeCardBox(card);
-        })
+        //populate with new boxes containing all cards in collection
+        if(collectionFindSelect.value === 'netrunnerdb') {
+            //populate with new random box
+            tooMany();
+        } else {
+            cards.forEach(card => {
+                makeCardBox(card);
+            });
+        }
     })
+
+    //creates a new collection
+
+
     });
 
     const collectionFindSelect = document.querySelector('#collection-select');
@@ -100,7 +109,7 @@ function cardFetch() {
     })
 };
 
-//filters cards from API based on faction
+//filters cards based on faction
 function factionFilter(dataSet) {
     if(selectedFaction === 'all') {
         return dataSet;
@@ -115,7 +124,7 @@ function factionFilter(dataSet) {
     }
 };
 
-//filters cards from API base on card type
+//filters cards based on card type
 function cardTypeFilter(dataSet) {
     if(selectedCardType === 'any') {
         return dataSet;
@@ -126,6 +135,7 @@ function cardTypeFilter(dataSet) {
     }
 };
 
+//filters cards by search
 function searchFilter(dataSet) {
     if(document.querySelector('#card_name').value === undefined) {
         return dataSet;
@@ -135,6 +145,14 @@ function searchFilter(dataSet) {
         });
     }
 }
+
+//behavior if too many cards are called for
+function tooMany() {
+    let cardArray = cardTypeFilter(factionFilter(cards));
+    let newRandCard = cardArray[randArrayItem(cardArray)];
+    makeCardBox(newRandCard);
+    alert("Too Many Cards to Display");
+};
 
 //returns a random index number for a given array
 function randArrayItem(array) {
