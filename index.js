@@ -76,8 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('new-deck-create-btn').addEventListener('click', (e) => {
             e.preventDefault();
 
+            //creates new object in json-server
+            //adds new deck name to deck select options
 
-            
             document.getElementById('new-deck-name-input').remove();
             document.getElementById('new-deck-create-btn').remove();
         })
@@ -204,6 +205,8 @@ function makeCardBox(card) {
     const cardImg = document.createElement('img');
     const collectionAddSelect = document.createElement('select');
     const addBtn = document.createElement('button');
+    const removeBtn = document.createElement('button');
+
 
     //build the cardBox element properties/values/etc.
     cardName.textContent = `${card.title}`;
@@ -217,16 +220,33 @@ function makeCardBox(card) {
         newOption.textContent = document.querySelectorAll('.collection')[i].textContent;
         collectionAddSelect.appendChild(newOption);
     };
-    addBtn.id = 'addBtn';
+    addBtn.class = 'addBtn';
     addBtn.textContent = 'Add to Collection';
-  
+    removeBtn.class = 'removeBtn';
+    removeBtn.textContent = 'Remove from Collection';
+
+    //add button function
+    addBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert(`${card.title} added to ${collectionAddSelect.options[collectionAddSelect.selectedIndex].textContent}`);
+    });
+
+    //remove button function
+    removeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    alert(`${card.title} removed from ${collectionAddSelect.options[collectionAddSelect.selectedIndex].textContent}`);
+    });
+
     //build the cardBox
     cardBox.appendChild(cardImg);
     cardBox.appendChild(cardName);
     cardBox.appendChild(faction);
     cardBox.appendChild(collectionAddSelect);
     cardBox.appendChild(addBtn);
+    cardBox.appendChild(removeBtn);
 
     //append the cardBox
     document.getElementById('cardblock').append(cardBox);
+
+
 };
