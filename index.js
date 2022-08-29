@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(cards.length > 100) {
             tooMany();
         } else {
+            console.log(cards);
             cards.forEach(card => {
                 makeCardBox(card);
             });
@@ -95,8 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedCollection = "https://netrunnerdb.com/api/2.0/public/cards";
             cardFetch();
         } else {
-            console.log(collectionFindSelect.value);
-        }
+            selectedCollection = `http://localhost:3000/${collectionFindSelect.value}`;
+            cardFetchLocal();
+            }
     });
 
     factionFindSelect.addEventListener('change', () => {
@@ -117,7 +119,26 @@ function cardFetch() {
     })
     .then((response) => response.json())
     .then(function(data) {
+        console.log(data);
         cards = data.data;
+        console.log(cards);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    })
+};
+
+//fetches the cards from db.json
+function cardFetchLocal() {
+    getCards = fetch(`${selectedCollection}`, {
+        headers: {
+            Accept: "application/json"
+        }
+    })
+    .then((response) => response.json())
+    .then(function(data) {
+        console.log(data);
+        cards = data;
         console.log(cards);
     })
     .catch((error) => {
@@ -207,7 +228,6 @@ function makeCardBox(card) {
     const addBtn = document.createElement('button');
     const removeBtn = document.createElement('button');
 
-
     //build the cardBox element properties/values/etc.
     cardName.textContent = `${card.title}`;
     faction.textContent = `faction: ${card.faction_code}`;
@@ -228,6 +248,20 @@ function makeCardBox(card) {
     //add button function
     addBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        let cardCopy = {};
+
+        const patchObj = {
+            'method': 'PATCH',
+            'headers': {
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            },
+            'body': JSON.stringify(card
+            )
+          }
+        
+        fetch(`http://localhost:3000/${collectionAddSelect.value}`, patchObj)
+
         alert(`${card.title} added to ${collectionAddSelect.options[collectionAddSelect.selectedIndex].textContent}`);
     });
 
@@ -247,6 +281,5 @@ function makeCardBox(card) {
 
     //append the cardBox
     document.getElementById('cardblock').append(cardBox);
-
 
 };
