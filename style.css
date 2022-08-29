@@ -34,10 +34,6 @@ body {
     opacity: .8;
   }
   
-  #collection-controls {
-    background:rgb(91, 130, 131);
-    opacity: .8;
-  }
   .card-box {
     text-align: center;
     border: grey solid 1px;

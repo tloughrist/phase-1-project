@@ -45,7 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     })
 
-
+    //displays all the cards in a collection
+    document.getElementById('displayBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        //remove old boxes
+        const cardBoxes = document.querySelectorAll('.card-box');
+        cardBoxes.forEach(box => {
+            box.remove();
+        });
+        //populate with new boxes containing searched cards
+        cards.forEach(card => {
+            makeCardBox(card);
+        })
+    })
     });
 
     const collectionFindSelect = document.querySelector('#collection-select');
@@ -88,7 +100,7 @@ function cardFetch() {
     })
 };
 
-//filters cards from API base on faction
+//filters cards from API based on faction
 function factionFilter(dataSet) {
     if(selectedFaction === 'all') {
         return dataSet;
@@ -148,7 +160,6 @@ function makeCardBox(card) {
     
     //build the cardBox elements
     const cardName = document.createElement('h3');
-    const side = document.createElement('p');
     const faction = document.createElement('p');
     const cardImg = document.createElement('img');
     const collectionAddSelect = document.createElement('select');
@@ -156,18 +167,22 @@ function makeCardBox(card) {
 
     //build the cardBox element properties/values/etc.
     cardName.textContent = `${card.title}`;
-    side.textContent = `side: ${card.side_code}`;
     faction.textContent = `faction: ${card.faction_code}`;
     cardImg.classList.add('card-image');
     cardImg.src = `https://static.nrdbassets.com/v1/large/${card.code}.jpg`;
     collectionAddSelect.id = 'collection-add';
+    for(let i = 1; i < document.querySelectorAll('.collection').length; i++) {
+        const newOption = document.createElement('option')
+        newOption.value = document.querySelectorAll('.collection')[i].value;
+        newOption.textContent = document.querySelectorAll('.collection')[i].textContent;
+        collectionAddSelect.appendChild(newOption);
+    };
     addBtn.id = 'addBtn';
     addBtn.textContent = 'Add to Collection';
   
     //build the cardBox
     cardBox.appendChild(cardImg);
     cardBox.appendChild(cardName);
-    cardBox.appendChild(side);
     cardBox.appendChild(faction);
     cardBox.appendChild(collectionAddSelect);
     cardBox.appendChild(addBtn);
@@ -175,7 +190,3 @@ function makeCardBox(card) {
     //append the cardBox
     document.getElementById('cardblock').append(cardBox);
 };
-
-
-/*
-*/
