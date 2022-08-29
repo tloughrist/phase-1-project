@@ -10,10 +10,39 @@
             <img id="bannerImg" src="https://timloughrist.files.wordpress.com/2022/08/nr_logo-1.png">
         </div>
         <div id="controls">
-            <select id="collection-select">
-                <option>NetrunnerDB</option>
+            <select class="control" id="collection-select">
+                <option value="netrunnerdb">NetrunnerDB</option>
+                <option value="test">Test</option>
             </select>
-            <button id="randomBtn">random card</button>
+            <select class="control" id="faction-select">
+                <option value="all">All</option>
+                <option class="corp" value="corp">Corp</option>
+                <option class="corp" value="hass-bioroid">--Hass-Bioroid</option>
+                <option class="corp" value="jinteki">--Jinteki</option>
+                <option class="corp" value="nbn">--NBN</option>
+                <option class="corp" value="neutral-corp">--Neutral-Corp</option>
+                <option class="corp" value="weland-consortium">--Weyland Consortium</option>
+                <option class="runner" value="runner">Runner</option>
+                <option class="runner" value="anarch">--Anarch</option>
+                <option class="runner" value="criminal">--Criminal</option>
+                <option class="runner" value="neutral-runner">--Neutral-Runner</option>
+                <option class="runner" value="shaper">--Shaper</option>
+            </select>
+            <select class="control" id="card-type-select">
+                <option value="Any">Any</option>
+                <option class="corp" value="identity">Identities</option>
+                <option class="corp" value="operation">Operations</option>
+                <option class="corp" value="agenda">Agendas</option>
+                <option class="corp" value="ice">Ice</option>
+                <option class="corp" value="upgrade">Upgrades</option>
+                <option class="corp" value="asset">Assets</option>
+                <option class="runner" value="hardware">Hardware</option>
+                <option class="runner" value="resource">Resources</option>
+                <option class="runner" value="program">Programs</option>
+                <option class="runner" value="event">Events</option>
+            </select>
+            <button class="control" id="searchBtn">search</button>
+            <button class="control" id="randomBtn">random</button>
         </div>
         <div id="cardblock">
         </div>

@@ -6,15 +6,15 @@ body {
   
   #banner {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     background: gray;
     opacity: .8;
-    height: 7rem;
+    height: 4rem;
     padding: 1rem;
   }
   
   #bannerImg {
-    height: 6rem;
+    height: 3rem;
     width: auto;
   }
   
@@ -22,12 +22,21 @@ body {
     margin: 2rem;
   }
   
+  #controls {
+    display: flex;
+    justify-content: center;
+    background: rgb(203, 214, 255);
+    opacity: .8;
+    height: 1.5rem;
+    padding: .5rem;
+  }
+
   .card-box {
     text-align: center;
     border: grey solid 1px;
     background-color: white;
     padding: 1rem;
-    width: 24rem;
+    width: 20rem;
     height: 40rem;
     display: inline-grid;
     margin: 1rem 2rem;
@@ -39,16 +48,28 @@ body {
     height: 24rem;
     width: auto;
   }
+
+  .control {
+    height: 1.5rem;
+  }
   
+  .corp {
+    background: lightblue;
+  }
+
+  .runner {
+    background: pink;
+  }
+
   button {
     position: relative;
-    background-color: #e04b52;
+    background-color: rgb(22, 22, 22);
     border: none;
     border-radius: 5px;
-    height: 3rem;
+    height: 1.5rem;
     width: max-content;
     color: whitesmoke;
-    font-size: 18px;
+    font-size: 14px;
     justify-self: center;
   }
   
