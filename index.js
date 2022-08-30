@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deckOption = document.createElement('option')
         deckOption.classList.add('collection');
         deckOption.value = e.name;
+        deckOption.id = `${e.name}`;
         deckOption.textContent = e.name;
 
         document.getElementById('collection-select').appendChild(deckOption);
@@ -80,6 +81,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
+    //deletes the active deck
+    document.getElementById('rmvBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        fetch(`http://localhost:3000/decks/${activeDeckId}`, {
+                'method': 'DELETE'
+        });
+
+        console.log(activeDeck)
+        document.getElementById(`${activeDeck[0].name}`).remove();
+
+        activeDeckId = -1;
+        activeDeck = 'netrunnerdb';
+        cardFetch();
+
+        
+    })
+
     //creates a new collection
     document.getElementById('addBtn').addEventListener('click', (e) => {
         e.preventDefault();
@@ -126,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let newOption = document.createElement('option');
             newOption.value = deckName;
             newOption.textContent = deckName;
+            newOption.id = `${deckName}`;
             newOption.classList.add('collection');
             collectionFindSelect.appendChild(newOption);
 
