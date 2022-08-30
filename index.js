@@ -1,5 +1,7 @@
 let cards = [];
 let getCards = 0;
+let currentCards = [];
+let decks = [];
 
 let selectedCollection = "https://netrunnerdb.com/api/2.0/public/cards";
 let selectedFaction = "all";
@@ -7,10 +9,25 @@ let selectedCardType = "any";
 
 document.addEventListener('DOMContentLoaded', () => {
     cardFetch();
+    deckFetch();
+
+    const collectionFindSelect = document.querySelector('#collection-select');
+    const factionFindSelect = document.querySelector('#faction-select');
+    const cardTypeFindSelect = document.querySelector('#card-type-select');
 
     //waits until the getCards fetch is complete
-    Promise.all([getCards]).then(function () {
+    Promise.all([getCards, getDecks]).then(function () {
     
+    //populates deck select
+    decks.forEach((e) => {
+        const deckOption = document.createElement('option')
+        deckOption.classList.add('collection');
+        deckOption.value = e.name;
+        deckOption.textContent = e.name;
+
+        document.getElementById('collection-select').appendChild(deckOption);
+    });
+
     //randomly selects a card and calls makeCardBox on it on page load
     let startCard = cards[randArrayItem(cards)];
     makeCardBox(startCard);
@@ -20,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         removeElements(document.querySelectorAll('.card-box'));
         //populate with new random box
+        deckFetch();
         let cardArray = cardTypeFilter(factionFilter(cards));
         let newRandCard = cardArray[randArrayItem(cardArray)];
         makeCardBox(newRandCard);
@@ -31,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         removeElements(document.querySelectorAll('.card-box'));
         
         //populate with new boxes containing searched cards
+        deckFetch();
         let cardArray = searchFilter(cardTypeFilter(factionFilter(cards)));
         if(cardArray.length > 100) {
             tooMany();
@@ -47,10 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
         removeElements(document.querySelectorAll('.card-box'));
 
         //populate with new boxes containing all cards in collection
+        deckFetch();
         if(cards.length > 100) {
             tooMany();
         } else {
-            console.log(cards);
+            //console.log(cards);
             cards.forEach(card => {
                 makeCardBox(card);
             });
@@ -77,8 +97,34 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('new-deck-create-btn').addEventListener('click', (e) => {
             e.preventDefault();
 
+            const deckName = newDeckField.value;
+            const deckObj = {};
+            deckObj.name = deckName;
+            deckObj.cards = [];
+
             //creates new object in json-server
-            //adds new deck name to deck select options
+            fetch("http://localhost:3000/decks", {
+                'method': 'POST',
+                'headers': {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+                },
+                'body': JSON.stringify(deckObj)
+            })
+            .then((response) => response.json())
+            .then(function(data) {
+                console.log(data);
+                deckFetch();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            })
+
+            let newOption = document.createElement('option');
+            newOption.value = deckName;
+            newOption.textContent = deckName;
+            newOption.classList.add('collection');
+            collectionFindSelect.appendChild(newOption);
 
             document.getElementById('new-deck-name-input').remove();
             document.getElementById('new-deck-create-btn').remove();
@@ -86,17 +132,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     });
 
-    const collectionFindSelect = document.querySelector('#collection-select');
-    const factionFindSelect = document.querySelector('#faction-select');
-    const cardTypeFindSelect = document.querySelector('#card-type-select');
-
     //this is mostly a placeholder until I build the json-server
     collectionFindSelect.addEventListener('change', () => {
         if(collectionFindSelect.value === 'netrunnerdb') {
             selectedCollection = "https://netrunnerdb.com/api/2.0/public/cards";
             cardFetch();
         } else {
-            selectedCollection = `http://localhost:3000/${collectionFindSelect.value}`;
+            selectedCollection = `http://localhost:3000/decks`;
             cardFetchLocal();
             }
     });
@@ -129,15 +171,32 @@ function cardFetch() {
 
 //fetches the cards from db.json
 function cardFetchLocal() {
-    getCards = fetch(`${selectedCollection}`, {
+    getCardsLocal = fetch(`${selectedCollection}`, {
         headers: {
             Accept: "application/json"
         }
     })
     .then((response) => response.json())
     .then(function(data) {
-        cards = data;
-        //console.log(cards);
+        //decks = data;
+        console.log(data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    })
+};
+
+//fetches decks
+function deckFetch() {
+    getDecks = fetch(`http://localhost:3000/decks`, {
+        headers: {
+            Accept: "application/json"
+        }
+    })
+    .then((response) => response.json())
+    .then(function(data) {
+        decks = data;
+        console.log(data);
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -179,7 +238,7 @@ function searchFilter(dataSet) {
             return el.title.toLowerCase().includes(document.querySelector('#card_name').value.toLowerCase());
         });
     }
-}
+};
 
 //behavior if too many cards are called for
 function tooMany() {
@@ -246,17 +305,35 @@ function makeCardBox(card) {
     //add button function
     addBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        let deckId = 1;
         
-        fetch(`http://localhost:3000/${collectionAddSelect.value}`, {
+    
+        //filter to find deck with name matching collectionAddSelect.value and assign deck id to deckId
+        let selectedDeck = decks.filter(function (el) {
+            return el.name === collectionAddSelect.value;
+        });
+        deckId = selectedDeck.id;
+ 
+        //add the current card to the array of cards
+        currentCards = decks[deckId].cards.push(card);
+
+        fetch(`http://localhost:3000/decks/${deckId}`, {
             'method': 'PATCH',
             'headers': {
-              "Content-Type": "application/json",
-              Accept: "application/json"
+            "Content-Type": "application/json",
+            Accept: "application/json"
             },
             'body': JSON.stringify({
-                card
+                "cards": currentCards
             })
-          })
+        })
+        .then((response) => response.json())
+        .then(function(data) {
+            console.log(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
 
         alert(`${card.title} added to ${collectionAddSelect.options[collectionAddSelect.selectedIndex].textContent}`);
     });
