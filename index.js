@@ -89,14 +89,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 'method': 'DELETE'
         });
 
+        //removes deck option
         console.log(activeDeck)
         document.getElementById(`${activeDeck[0].name}`).remove();
 
+        //resets values
         activeDeckId = -1;
         activeDeck = 'netrunnerdb';
         cardFetch();
-
-        
     })
 
     //creates a new collection
@@ -111,6 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         newDeckField.placeholder = 'Deck name';
         newDeckCreateBtn.textContent = 'Submit Deck';
+
+        newDeckField.min = "5";
+        newDeckField.pattern = "[A-Za-z0-9]{15}";
 
         document.getElementById('search').appendChild(newDeckField);
         document.getElementById('search').appendChild(newDeckCreateBtn);
@@ -391,14 +394,20 @@ function makeCardBox(card) {
             })
         })
         .then((response) => response.json())
-        .then(function(data) {
-            console.log(data);
+        .then(function (data) {
+            //console.log(data);
         })
         .catch((error) => {
             console.error('Error:', error);
         })
 
-        alert(`${card.title} added to ${collectionAddSelect.options[collectionAddSelect.selectedIndex].textContent}`);
+        cards = currentCards;
+        console.log(cards);
+
+        document.getElementById(`card${card.code}`).remove();
+
+        alert(`${card.title} removed from ${collectionAddSelect.options[collectionAddSelect.selectedIndex].textContent}`);
+
     });
 
     //build the cardBox

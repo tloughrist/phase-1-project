@@ -1,3 +1,9 @@
 {
-  "decks": []
+  "decks": [
+    {
+      "name": "tim_runner",
+      "cards": [],
+      "id": 1
+    }
+  ]
 }

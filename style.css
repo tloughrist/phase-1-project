@@ -22,6 +22,12 @@ body {
     margin: 2rem;
   }
   
+  #collection-add {
+    width: 8rem;
+    justify-self: center;
+    height: 1.5rem;
+  }
+
   .form-div {
     display: flex;
     justify-content: center;
