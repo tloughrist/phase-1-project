@@ -119,9 +119,8 @@ function cardFetch() {
     })
     .then((response) => response.json())
     .then(function(data) {
-        console.log(data);
         cards = data.data;
-        console.log(cards);
+        //console.log(cards);
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -137,9 +136,8 @@ function cardFetchLocal() {
     })
     .then((response) => response.json())
     .then(function(data) {
-        console.log(data);
         cards = data;
-        console.log(cards);
+        //console.log(cards);
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -248,19 +246,17 @@ function makeCardBox(card) {
     //add button function
     addBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        let cardCopy = {};
-
-        const patchObj = {
+        
+        fetch(`http://localhost:3000/${collectionAddSelect.value}`, {
             'method': 'PATCH',
             'headers': {
               "Content-Type": "application/json",
               Accept: "application/json"
             },
-            'body': JSON.stringify(card
-            )
-          }
-        
-        fetch(`http://localhost:3000/${collectionAddSelect.value}`, patchObj)
+            'body': JSON.stringify({
+                card
+            })
+          })
 
         alert(`${card.title} added to ${collectionAddSelect.options[collectionAddSelect.selectedIndex].textContent}`);
     });
