@@ -3,6 +3,9 @@ let getCards = 0;
 let currentCards = [];
 let decks = [];
 
+let activeDeck = 'netrunnerdb';
+let activeDeckId = -1;
+
 let selectedCollection = "https://netrunnerdb.com/api/2.0/public/cards";
 let selectedFaction = "all";
 let selectedCardType = "any";
@@ -135,10 +138,12 @@ document.addEventListener('DOMContentLoaded', () => {
     //this is mostly a placeholder until I build the json-server
     collectionFindSelect.addEventListener('change', () => {
         if(collectionFindSelect.value === 'netrunnerdb') {
-            selectedCollection = "https://netrunnerdb.com/api/2.0/public/cards";
             cardFetch();
         } else {
-            selectedCollection = `http://localhost:3000/decks`;
+            activeDeck = decks.filter(function (el) {
+                return el.name === collectionFindSelect.value;
+            });
+            activeDeckId = activeDeck[0].id;
             cardFetchLocal();
             }
     });
@@ -154,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //fetches the cards from netrunnerdb
 function cardFetch() {
-    getCards = fetch(`${selectedCollection}`, {
+    getCards = fetch("https://netrunnerdb.com/api/2.0/public/cards", {
         headers: {
             Accept: "application/json"
         }
@@ -171,15 +176,16 @@ function cardFetch() {
 
 //fetches the cards from db.json
 function cardFetchLocal() {
-    getCardsLocal = fetch(`${selectedCollection}`, {
+    getCardsLocal = fetch(`http://localhost:3000/decks/${activeDeckId}`, {
         headers: {
             Accept: "application/json"
         }
     })
     .then((response) => response.json())
     .then(function(data) {
-        //decks = data;
-        console.log(data);
+        console.log(data)
+        cards = data.cards;
+  
     })
     .catch((error) => {
         console.error('Error:', error);
