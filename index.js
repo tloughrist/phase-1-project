@@ -298,24 +298,23 @@ function makeCardBox(card) {
         collectionAddSelect.appendChild(newOption);
     };
     addBtn.class = 'addBtn';
-    addBtn.textContent = 'Add to Collection';
+    addBtn.textContent = 'Add to Deck';
     removeBtn.class = 'removeBtn';
-    removeBtn.textContent = 'Remove from Collection';
+    removeBtn.textContent = 'Remove from Deck';
 
     //add button function
     addBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        let deckId = 1;
-        
-    
+
         //filter to find deck with name matching collectionAddSelect.value and assign deck id to deckId
         let selectedDeck = decks.filter(function (el) {
             return el.name === collectionAddSelect.value;
         });
-        deckId = selectedDeck.id;
- 
+        console.log(selectedDeck)
+        let deckId = selectedDeck[0].id;
+
         //add the current card to the array of cards
-        currentCards = decks[deckId].cards.push(card);
+        currentCards.push(card);
 
         fetch(`http://localhost:3000/decks/${deckId}`, {
             'method': 'PATCH',
@@ -340,8 +339,40 @@ function makeCardBox(card) {
 
     //remove button function
     removeBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    alert(`${card.title} removed from ${collectionAddSelect.options[collectionAddSelect.selectedIndex].textContent}`);
+        e.preventDefault();
+
+        //filter to find deck with name matching collectionAddSelect.value and assign deck id to deckId
+        let selectedDeck = decks.filter(function (el) {
+            return el.name === collectionAddSelect.value;
+        });
+        console.log(selectedDeck)
+        let deckId = selectedDeck[0].id;
+
+        //remove the current card to the array of cards
+        let cardIndex = currentCards.indexOf(card);
+        if(cardIndex >= 0) {
+            currentCards.splice(cardIndex, 1);
+        };
+
+        fetch(`http://localhost:3000/decks/${deckId}`, {
+            'method': 'PATCH',
+            'headers': {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+            },
+            'body': JSON.stringify({
+                "cards": currentCards
+            })
+        })
+        .then((response) => response.json())
+        .then(function(data) {
+            console.log(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
+
+        alert(`${card.title} added to ${collectionAddSelect.options[collectionAddSelect.selectedIndex].textContent}`);
     });
 
     //build the cardBox
@@ -354,5 +385,4 @@ function makeCardBox(card) {
 
     //append the cardBox
     document.getElementById('cardblock').append(cardBox);
-
 };
