@@ -7,24 +7,14 @@ let selectedCardType = "any";
 let deckSelectElement = 0;
 let factionSelectElement = 0;
 let cardTypeSelectElement = 0;
-let currentCards = 0;
-let localDecks = 0;
-let filteredCards = 0;
+let currentCards = [0];
+let localDecks = [0];
+let filteredCards = [0];
 let currentDeckId = 0;
 
 //initial fetch and populate
-fetchCards();
+fetchCardsRemote();
 fetchDecks();
-
-//this is working but I'd like to make setDeckOptions more general
-setTimeout(setDeckOptions, 100);
-
-function setDeckOptions() {
-    localDecks.forEach((e) => {
-        addOption(e.name, deckSelectElement);
-    });
-};
-    
 
 //**Code to be run after DOM content loads**
 document.addEventListener('DOMContentLoaded', () => {
@@ -50,6 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('displayBtn').addEventListener('click', (e) => {
         e.preventDefault();
         displayButton();
+    });
+
+    //delete button event listener
+    document.getElementById('rmvBtn').addEventListener('click', (e) => {
+        deleteButton();
     });
 
     //Create button event listener
@@ -91,16 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then((response) => response.json())
             .then(function(data) {
-                //console.log(data);
+                fetchDecks();
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
-
-            //Updates localDecks and selectDeck options and selectDeck options on cards(??)
-            fetchDecks();
-            addOption(emptyDeck.name, deckSelectElement);
-            //addOption(emptyDeck, ??eachCardSelect??)
 
             //Remove the new form elements
             removeElements(document.querySelectorAll('.disposable'));
@@ -112,6 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
         currentDeck = deckSelectElement.value;
         updateDeckId(currentDeck);
         fetchCards();
+        if(currentDeck === 'netrunnerdb') {
+            fetchDecks();
+        }
     });
 
     factionSelectElement.addEventListener('change', () => {
@@ -147,13 +140,8 @@ function fetchCardsRemote() {
     })
     .then((response) => response.json())
     .then(function(data) {
-        //console.log(`fetch cards remote: ${data.data}`);
         //sets the current cards to the cards from netrunnerdb
         currentCards = data.data;
-        //remove old card boxes
-        removeElements(document.querySelectorAll('.card-box'));
-        //Displays random card
-        displayCards(randomCard(currentCards));
         return data.data;
     })
     .catch((error) => {
@@ -183,7 +171,7 @@ function fetchCardsLocal() {
 };
 
 function fetchDecks() {
-    deckPromise = fetch(`${localDeckServer}`, {
+    fetch(`${localDeckServer}`, {
         headers: {
             Accept: "application/json"
         }
@@ -192,6 +180,15 @@ function fetchDecks() {
     .then(function(data) {
         //sets the local decks to the decks from db.json
         localDecks = data;
+        //removes existing deck options
+        const deckArray = Array.prototype.slice.call(document.getElementsByClassName('new-deck'));
+        removeElements(deckArray);
+        //sets new deck options
+        setDeckOptions(deckSelectElement);
+        //remove old card boxes
+        removeElements(document.querySelectorAll('.card-box'));
+        //Displays random card
+        displayCards(randomCard(currentCards));
         return data;
     })
     .catch((error) => {
@@ -258,8 +255,12 @@ function randomCard(cards) {
 };
 
 function randArrayItem(array) {
-    let randIndex = Math.floor(Math.random() * (array.length));
-    return randIndex;
+    if(array === undefined) {
+        return 0;
+    } else {
+        let randIndex = Math.floor(Math.random() * (array.length));
+        return randIndex;
+    }
 };
 
 function searchButton() {
@@ -281,7 +282,7 @@ function searchButton() {
     selectedCardType = cardTypeSelectElement.value;
 };
 
-function displayButton () {
+function displayButton() {
     //remove old card boxes
     removeElements(document.querySelectorAll('.card-box'));
     //populate with new boxes containing all cards in deck
@@ -290,6 +291,12 @@ function displayButton () {
     } else {
         displayCards(currentCards);
     }
+};
+
+function deleteButton() {
+    fetch(`http://localhost:3000/decks/${currentDeckId}`, {
+        'method': 'DELETE'
+    })
 };
 
 //behavior if too many cards are called for
@@ -305,12 +312,14 @@ function removeElements(elementArray) {
     });
 };
 
+//display handler
 function displayCards(cards) {
     cards.forEach((e) => {
         createCardBox(e);
     });
 };
 
+//creates and appends card boxes
 function createCardBox(card) {
     //build the cardBox itself
     const cardBox = document.createElement('div');
@@ -329,11 +338,12 @@ function createCardBox(card) {
 
     const cardDeckSelect = document.createElement('select');
     cardDeckSelect.id = 'collection-add';
+    setDeckOptions(cardDeckSelect);
 
     const addBtn = document.createElement('button');
     addBtn.classList.add('addBtn');
     addBtn.textContent = 'Add to Collection';
-    addButton(addBtn, card);
+    addButton(addBtn, card, cardDeckSelect);
 
     const removeBtn = document.createElement('button');
     removeBtn.classList.add('removeBtn');
@@ -352,8 +362,40 @@ function createCardBox(card) {
     document.getElementById('cardblock').append(cardBox);
 };
 
-function addButton(button, card) {
+function addButton(button, card, selectElement) {
     button.addEventListener('click', (e) => {
+        e.preventDefault();
+        let modifyDeckId = -1;
+        //filter to find deck with name matching collectionAddSelect.value and assign deck id to modifyDeckId
+        let modifyDeck = localDecks.filter(function (el) {
+            return el.name === selectElement.value;
+        });
+        modifyDeckId = modifyDeck[0].id;
+
+        modifyDeckIndex = localDecks.indexOf(modifyDeck[0]);
+
+        //add the current card to the array of cards
+        let modifyDeckCards = localDecks[modifyDeckIndex].cards;
+        modifyDeckCards.push(card);
+        console.log(modifyDeckCards)
+
+        fetch(`http://localhost:3000/decks/${modifyDeckId}`, {
+            'method': 'PATCH',
+            'headers': {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+            },
+            'body': JSON.stringify({
+                "cards": modifyDeckCards
+            })
+        })
+        .then((response) => response.json())
+        .then(function(data) {
+            console.log(data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        })
         alert(`${card.title} added to ...`);
         });
 };
@@ -386,49 +428,9 @@ function updateDeckId(deckName) {
     };
 };
 
-/*
- 
-
-    collectionAddSelect.id = 'collection-add';
-    for(let i = 1; i < document.querySelectorAll('.collection').length; i++) {
-        const newOption = document.createElement('option')
-        newOption.value = document.querySelectorAll('.collection')[i].value;
-        newOption.textContent = document.querySelectorAll('.collection')[i].textContent;
-        collectionAddSelect.appendChild(newOption);
-    };
-
-
-    //add button function
-    addBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        let deckId = 1;
-        
-        //filter to find deck with name matching collectionAddSelect.value and assign deck id to deckId
-        let selectedDeck = decks.filter(function (el) {
-            return el.name === collectionAddSelect.value;
-        });
-        deckId = selectedDeck.id;
- 
-        //add the current card to the array of cards
-        currentCards = decks[deckId].cards.push(card);
-
-        fetch(`http://localhost:3000/decks/${deckId}`, {
-            'method': 'PATCH',
-            'headers': {
-            "Content-Type": "application/json",
-            Accept: "application/json"
-            },
-            'body': JSON.stringify({
-                "cards": currentCards
-            })
-        })
-        .then((response) => response.json())
-        .then(function(data) {
-            console.log(data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        })
-
+function setDeckOptions(selectElement) {
+    localDecks.forEach((e) => {
+        addOption(e.name, selectElement);
     });
-*/
+};
+
