@@ -28,17 +28,21 @@ body {
     height: 1.5rem;
   }
 
-  .form-div {
-    display: flex;
-    justify-content: center;
-    height: 1.5rem;
-    padding: .5rem;
+  #collection-select {
+    position: relative;
+    align-self: auto;
   }
 
-  #search-controls {
+  .form-div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    min-height: 1.5rem;
+    padding: .5rem;
     background: rgb(203, 214, 255);
     opacity: .8;
   }
+
   
   .card-box {
     text-align: center;

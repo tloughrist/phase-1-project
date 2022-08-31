@@ -10,30 +10,47 @@ let cardTypeSelectElement = 0;
 let currentCards = 0;
 let localDecks = 0;
 let filteredCards = 0;
+let currentDeckId = 0;
 
-//Initial fetch
+//initial fetch and populate
 fetchCards();
 fetchDecks();
+
+//this is working but I'd like to make setDeckOptions more general
+setTimeout(setDeckOptions, 50);
+
+function setDeckOptions() {
+    localDecks.forEach((e) => {
+        addOption(e.name, deckSelectElement);
+    });
+};
+    
 
 //**Code to be run after DOM content loads**
 document.addEventListener('DOMContentLoaded', () => {
     
     //Assign values to select elements
-    deckSelectElement = document.querySelector('#deck-select');
+    deckSelectElement = document.querySelector('#collection-select');
     factionSelectElement = document.querySelector('#faction-select');
     cardTypeSelectElement = document.querySelector('#card-type-select');
 
-    //Displays random card on load
-    displayCards(randomCard(currentCards));
-
     //Search button event listener
-    document.getElementById('searchBtn').addEventListener('click', searchButton());
+    document.getElementById('searchBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        searchButton()
+    });
 
     //Random button event listener
-    document.getElementById('randomBtn').addEventListener('click', randomButton());
+    document.getElementById('randomBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        randomButton();
+    });
     
     //Display button event listener
-    document.getElementById('displayBtn').addEventListener('click', displayButton());
+    document.getElementById('displayBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        displayButton();
+    });
 
     //Create button event listener
     document.getElementById('addBtn').addEventListener('click', (e) => {
@@ -74,15 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then((response) => response.json())
             .then(function(data) {
-                console.log(data);
+                //console.log(data);
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
 
             //Updates localDecks and selectDeck options and selectDeck options on cards(??)
-            update(localDecks);
-            addOption(emptyDeck, deckSelectElement);
+            fetchDecks();
+            addOption(emptyDeck.name, deckSelectElement);
             //addOption(emptyDeck, ??eachCardSelect??)
 
             //Remove the new form elements
@@ -90,10 +107,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    //Event listeners for changes in the form select elements
+    //event listeners for changes in the form select elements
     deckSelectElement.addEventListener('change', () => {
         currentDeck = deckSelectElement.value;
-        update(currentCard);
+        updateDeckId(currentDeck);
+        fetchCards();
     });
 
     factionSelectElement.addEventListener('change', () => {
@@ -101,14 +119,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     cardTypeSelectElement.addEventListener('change', () => {
-        cardTypeSelectElement = cardTypeFindSelect.value;
+        selectedCardType = cardTypeSelectElement.value;
     });
 });
 
 //**Code running outside DOMContentLoaded event**
 
+//sets values based for search filters
+function setSelectValues(valueToChange, input) {
+    valueToChange = input;
+};
+
 //fetches the cards from the current deck
-function fetchCards(server) {
+function fetchCards() {
     if(currentDeck === "netrunnerdb") {
         currentCards = fetchCardsRemote();
     } else {
@@ -124,7 +147,13 @@ function fetchCardsRemote() {
     })
     .then((response) => response.json())
     .then(function(data) {
-        console.log(`fetch cards remote: ${data.data}`);
+        //console.log(`fetch cards remote: ${data.data}`);
+        //sets the current cards to the cards from netrunnerdb
+        currentCards = data.data;
+        //remove old card boxes
+        removeElements(document.querySelectorAll('.card-box'));
+        //Displays random card
+        displayCards(randomCard(currentCards));
         return data.data;
     })
     .catch((error) => {
@@ -133,14 +162,19 @@ function fetchCardsRemote() {
 };
 
 function fetchCardsLocal() {
-    fetch(`${localDeckServer}`, {
+    fetch(`${localDeckServer}/${currentDeckId}`, {
         headers: {
             Accept: "application/json"
         }
     })
     .then((response) => response.json())
     .then(function(data) {
-        //console.log(`fetch cards local: ${data.cards}`);
+        //sets the current cards to the cards from netrunnerdb
+        currentCards = data.cards;
+        //remove old card boxes
+        removeElements(document.querySelectorAll('.card-box'));
+        //Displays random card
+        displayCards(currentCards);
         return data.cards;
     })
     .catch((error) => {
@@ -149,14 +183,15 @@ function fetchCardsLocal() {
 };
 
 function fetchDecks() {
-    fetch(`${localDeckServer}`, {
+    deckPromise = fetch(`${localDeckServer}`, {
         headers: {
             Accept: "application/json"
         }
     })
     .then((response) => response.json())
     .then(function(data) {
-        console.log(`fetch decks: ${data}`)
+        //sets the local decks to the decks from db.json
+        localDecks = data;
         return data;
     })
     .catch((error) => {
@@ -164,7 +199,7 @@ function fetchDecks() {
     })
 };
 
-//Applies form filters to a given array
+//applies form filters to a given array
 function filter(arrayObjs) {
     return searchFilter(cardTypeFilter(factionFilter(arrayObjs)));
 }
@@ -206,36 +241,48 @@ function searchFilter(arrayObjs) {
     }
 };
 
-//Function for random button
+//function for random button
 function randomButton() {
-    e.preventDefault();
+    //remove old card boxes
     removeElements(document.querySelectorAll('.card-box'));
+    //update filtered cards
+    filteredCards = filter(currentCards);
     //populate with new random box
     displayCards(randomCard(filteredCards));
 };
 
 function randomCard(cards) {
-    return cards[randArrayItem(cards)];
+    let randCard = [];
+    randCard.push(cards[randArrayItem(cards)]);
+    return randCard;
 };
 
 function randArrayItem(array) {
-    let randIndex = Math.floor(Math.random() * (array.length - 1));
+    let randIndex = Math.floor(Math.random() * (array.length));
     return randIndex;
 };
 
 function searchButton() {
-    e.preventDefault();
+    //remove old card boxes
     removeElements(document.querySelectorAll('.card-box'));
+    //update filtered cards
+    filteredCards = filter(currentCards);
     //populate with new boxes containing searched cards
-    if(currentCards.length > 100) {
+    console.log(filteredCards.length)
+    if(filteredCards.length > 100) {
         tooManyAlert();
     } else {
     displayCards(filteredCards);
     }
+
+    //resets form elements and misc. values
+    document.getElementById('search').reset();
+    selectedFaction = factionSelectElement.value;
+    selectedCardType = cardTypeSelectElement.value;
 };
 
 function displayButton () {
-    e.preventDefault();
+    //remove old card boxes
     removeElements(document.querySelectorAll('.card-box'));
     //populate with new boxes containing all cards in deck
     if(currentCards.length > 100) {
@@ -253,7 +300,7 @@ function tooManyAlert() {
 
 //removes current boxes
 function removeElements(elementArray) {
-    elementArray.forEach(e => {
+    elementArray.forEach((e) => {
         e.remove();
     });
 };
@@ -297,7 +344,7 @@ function createCardBox(card) {
     cardBox.appendChild(cardImg);
     cardBox.appendChild(cardName);
     cardBox.appendChild(faction);
-    cardBox.appendChild(collectionAddSelect);
+    cardBox.appendChild(cardDeckSelect);
     cardBox.appendChild(addBtn);
     cardBox.appendChild(removeBtn);
     
@@ -307,26 +354,40 @@ function createCardBox(card) {
 
 function addButton(button, card) {
     button.addEventListener('click', (e) => {
-        e.preventDefault();
         alert(`${card.title} added to ...`);
         });
 };
 
 function removeButton(button, card) {
     button.addEventListener('click', (e) => {
-        e.preventDefault();
         alert(`${card.title} removed from ...`);
         });
 };
 
+//add options to a select element
+function addOption(optionName, selectElement) {
+    const newOption = document.createElement('option');
+    newOption.id = optionName;
+    newOption.value = optionName;
+    newOption.textContent = optionName;
+    newOption.classList.add('new-deck');
+    selectElement.appendChild(newOption);
+};
 
-
+//updates currentDeckId to the id...of the current deck
+function updateDeckId(deckName) {
+    if(deckName === 'netrunnerdb') {
+        currentDeckId = -1;
+    } else {
+        const deckObj = localDecks.filter(function (el) {
+            return el.name === deckName;
+        });
+        currentDeckId = deckObj[0].id;
+    };
+};
 
 /*
-
-
-
-
+ 
 
     collectionAddSelect.id = 'collection-add';
     for(let i = 1; i < document.querySelectorAll('.collection').length; i++) {

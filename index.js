@@ -74,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(cards.length > 100) {
             tooMany();
         } else {
-            //console.log(cards);
             cards.forEach(card => {
                 makeCardBox(card);
             });
@@ -90,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         //removes deck option
-        console.log(activeDeck)
         document.getElementById(`${activeDeck[0].name}`).remove();
 
         //resets values
@@ -138,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then((response) => response.json())
             .then(function(data) {
-                console.log(data);
                 deckFetch();
             })
             .catch((error) => {
@@ -190,7 +187,6 @@ function cardFetch() {
     .then((response) => response.json())
     .then(function(data) {
         cards = data.data;
-        //console.log(cards);
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -206,7 +202,6 @@ function cardFetchLocal() {
     })
     .then((response) => response.json())
     .then(function(data) {
-        console.log(data)
         cards = data.cards;
   
     })
@@ -225,7 +220,6 @@ function deckFetch() {
     .then((response) => response.json())
     .then(function(data) {
         decks = data;
-        console.log(data);
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -339,12 +333,11 @@ function makeCardBox(card) {
         let selectedDeck = decks.filter(function (el) {
             return el.name === collectionAddSelect.value;
         });
-        console.log(selectedDeck)
         let deckId = selectedDeck[0].id;
 
         //add the current card to the array of cards
+        
         currentCards.push(card);
-
         fetch(`http://localhost:3000/decks/${deckId}`, {
             'method': 'PATCH',
             'headers': {
@@ -357,7 +350,6 @@ function makeCardBox(card) {
         })
         .then((response) => response.json())
         .then(function(data) {
-            console.log(data);
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -374,11 +366,23 @@ function makeCardBox(card) {
         let selectedDeck = decks.filter(function (el) {
             return el.name === collectionAddSelect.value;
         });
-        console.log(selectedDeck)
-        let deckId = selectedDeck[0].id;
+        let cardIndex = selectedDeck[0].cards.indexOf(card);
 
-        //remove the current card to the array of cards
-        let cardIndex = currentCards.indexOf(card);
+        console.log(card);
+
+        console.log(`deck ${selectedDeck}`);
+
+        console.log(`index ${cardIndex}`);
+        
+        selectedDeck[0].cards.splice([cardIndex], 1);
+
+        console.log(`spliced deck ${selectedDeck[0].cards.splice([cardIndex], 1)}`);
+
+
+        //remove the current card to the array of cards **not currently working
+
+        //let cardIndex = currentCards.indexOf(card);
+/*
         if(cardIndex >= 0) {
             currentCards.splice(cardIndex, 1);
         };
@@ -395,14 +399,12 @@ function makeCardBox(card) {
         })
         .then((response) => response.json())
         .then(function (data) {
-            //console.log(data);
         })
         .catch((error) => {
             console.error('Error:', error);
         })
-
+*/
         cards = currentCards;
-        console.log(cards);
 
         document.getElementById(`card${card.code}`).remove();
 

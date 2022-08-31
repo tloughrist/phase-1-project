@@ -10,12 +10,16 @@
             <img id="bannerImg" src="https://timloughrist.files.wordpress.com/2022/08/nr_logo-1.png">
         </div>
         <div class="form-div" id="search-controls">
-            <form id="search">
+            <form id="decks">
+                <p>Deck:</p>
                 <select class="control" id="collection-select">
                     <option class="collection" value="netrunnerdb">NetrunnerDB</option>
                 </select>
+            </form>
+            <form id="search">
+                <p>Faction:</p>
                 <select class="control" id="faction-select">
-                    <option value="all">All</option>
+                    <option value="all" selected>All</option>
                     <option class="corp" value="corp">Corp</option>
                     <option class="corp" value="haas-bioroid">--Hass-Bioroid</option>
                     <option class="corp" value="jinteki">--Jinteki</option>
@@ -28,8 +32,9 @@
                     <option class="runner" value="neutral-runner">--Neutral-Runner</option>
                     <option class="runner" value="shaper">--Shaper</option>
                 </select>
+                <p>Card Type:</p>
                 <select class="control" id="card-type-select">
-                    <option value="any">Any</option>
+                    <option value="any" selected>Any</option>
                     <option class="corp" value="identity">Identities</option>
                     <option class="corp" value="operation">Operations</option>
                     <option class="corp" value="agenda">Agendas</option>
@@ -41,7 +46,7 @@
                     <option class="runner" value="program">Programs</option>
                     <option class="runner" value="event">Events</option>
                 </select>
-                <input id="card_name" type="text" placeholder="Card name (optional)"></input>
+                <input class="control" id="card_name" type="text" placeholder="Card name (optional)"></input>
                 <button class="control" id="searchBtn">search</button>
                 <button class="control" id="randomBtn">random</button>
                 <button class="control" id="displayBtn">display deck</button>
@@ -51,7 +56,7 @@
         </div>
         <div id="cardblock">
         </div>
-        <script type="text/javascript" src="file:///home/timloughrist/Code/Flatiron/phase-01/phase-1-project/index.js"></script> 
-        <!-- <script type="text/javascript" src="file:///home/timloughrist/Code/Flatiron/phase-01/phase-1-project/index_refactor.js"></script> -->
+        <!-- <script type="text/javascript" src="file:///home/timloughrist/Code/Flatiron/phase-01/phase-1-project/index.js"></script> --> 
+        <script type="text/javascript" src="file:///home/timloughrist/Code/Flatiron/phase-01/phase-1-project/index_refactor.js"></script>
     </body>
 </html>
