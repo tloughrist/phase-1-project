@@ -11,47 +11,62 @@
         </div>
         <div class="form-div" id="search-controls">
             <form id="decks">
-                <p>Deck:</p>
+                <div class="form-label">Deck:</div>
                 <select class="control" id="collection-select">
                     <option class="collection" value="netrunnerdb">NetrunnerDB</option>
                 </select>
             </form>
             <form id="search">
-                <p>Faction:</p>
-                <select class="control" id="faction-select">
-                    <option value="all" selected>All</option>
-                    <option class="corp" value="corp">Corp</option>
-                    <option class="corp" value="haas-bioroid">--Hass-Bioroid</option>
-                    <option class="corp" value="jinteki">--Jinteki</option>
-                    <option class="corp" value="nbn">--NBN</option>
-                    <option class="corp" value="neutral-corp">--Neutral-Corp</option>
-                    <option class="corp" value="weyland-consortium">--Weyland Consortium</option>
-                    <option class="runner" value="runner">Runner</option>
-                    <option class="runner" value="anarch">--Anarch</option>
-                    <option class="runner" value="criminal">--Criminal</option>
-                    <option class="runner" value="neutral-runner">--Neutral-Runner</option>
-                    <option class="runner" value="shaper">--Shaper</option>
-                </select>
-                <p>Card Type:</p>
-                <select class="control" id="card-type-select">
-                    <option value="any" selected>Any</option>
-                    <option class="corp" value="identity">Identities</option>
-                    <option class="corp" value="operation">Operations</option>
-                    <option class="corp" value="agenda">Agendas</option>
-                    <option class="corp" value="ice">Ice</option>
-                    <option class="corp" value="upgrade">Upgrades</option>
-                    <option class="corp" value="asset">Assets</option>
-                    <option class="runner" value="hardware">Hardware</option>
-                    <option class="runner" value="resource">Resources</option>
-                    <option class="runner" value="program">Programs</option>
-                    <option class="runner" value="event">Events</option>
-                </select>
-                <input class="control" id="card_name" type="text" placeholder="Card name (optional)"></input>
-                <button class="control" id="searchBtn">search</button>
-                <button class="control" id="randomBtn">random</button>
-                <button class="control" id="displayBtn">display deck</button>
-                <button class="control" id="rmvBtn">delete current deck</button>
-                <button class="control" id="addBtn">create new deck</button>
+                <div id="selectors">
+                    <div class="form-label">Faction:</div>
+                    <select class="control" id="faction-select">
+                        <option value="all" selected>All</option>
+                        <option class="corp" value="corp">Corp</option>
+                        <option class="corp" value="haas-bioroid">--Hass-Bioroid</option>
+                        <option class="corp" value="jinteki">--Jinteki</option>
+                        <option class="corp" value="nbn">--NBN</option>
+                        <option class="corp" value="neutral-corp">--Neutral-Corp</option>
+                        <option class="corp" value="weyland-consortium">--Weyland Consortium</option>
+                        <option class="runner" value="runner">Runner</option>
+                        <option class="runner" value="anarch">--Anarch</option>
+                        <option class="runner" value="criminal">--Criminal</option>
+                        <option class="runner" value="neutral-runner">--Neutral-Runner</option>
+                        <option class="runner" value="shaper">--Shaper</option>
+                    </select>
+                    <div class="form-label">Card Type:</div>
+                    <select class="control" id="card-type-select">
+                        <option value="any" selected>Any</option>
+                        <option class="corp" value="identity">Identities</option>
+                        <option class="corp" value="operation">Operations</option>
+                        <option class="corp" value="agenda">Agendas</option>
+                        <option class="corp" value="ice">Ice</option>
+                        <option class="corp" value="upgrade">Upgrades</option>
+                        <option class="corp" value="asset">Assets</option>
+                        <option class="runner" value="hardware">Hardware</option>
+                        <option class="runner" value="resource">Resources</option>
+                        <option class="runner" value="program">Programs</option>
+                        <option class="runner" value="event">Events</option>
+                    </select>
+                    <div class="form-label">Card Name:</div>
+                    <input class="control" id="card_name" type="text"></input>
+                </div>
+                <div class="spacer"></div>
+                <hr>
+                <div class="spacer"></div>
+                <div class="form-buttons">
+                    <button class="control" id="searchBtn">search</button>
+                    <button class="control" id="randomBtn">random</button>
+                    <div class="spacer"></div>
+                    <button class="control" id="displayBtn">display deck</button>
+                    <div class="spacer"></div>
+                    <button class="control" id="rmvBtn">delete current deck</button>
+                    <div class="spacer"></div>
+                    <button class="control" id="addBtn">create new deck</button>
+                </div>
+                <div class="spacer"></div>
+                <div id="create-form">
+
+                </div>
             </form>
         </div>
         <div id="cardblock">

@@ -17,7 +17,7 @@ fetchCards();
 fetchDecks();
 
 //this is working but I'd like to make setDeckOptions more general
-setTimeout(setDeckOptions, 50);
+setTimeout(setDeckOptions, 100);
 
 function setDeckOptions() {
     localDecks.forEach((e) => {
@@ -66,8 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
         newDeckCreateBtn.textContent = 'Submit Deck';
         newDeckCreateBtn.classList.add('disposable');
 
-        document.getElementById('search').appendChild(newDeckField);
-        document.getElementById('search').appendChild(newDeckCreateBtn);
+        document.getElementById('create-form').appendChild(newDeckField);
+        document.getElementById('create-form').appendChild(newDeckCreateBtn);
         
         //submit new deck
         newDeckCreateBtn.addEventListener('click', (e) => {

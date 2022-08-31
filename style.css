@@ -34,16 +34,23 @@ body {
   }
 
   .form-div {
-    display: flex;
+    display: grid;
+    flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    align-items: baseline;
+    gap: 10px;
+    justify-content: left;
+    margin-top: .5rem;
     min-height: 1.5rem;
     padding: .5rem;
     background: rgb(203, 214, 255);
     opacity: .8;
   }
 
-  
+  .form-label {
+    margin-top: 10px;
+  }
+
   .card-box {
     text-align: center;
     border: grey solid 1px;
@@ -56,6 +63,14 @@ body {
     box-shadow: 3px 4px darkgrey;
   }
   
+.form-buttons {
+  margin-top: 10px;
+}
+
+#card_name {
+  height: 1.25rem;
+}
+
   .card-image {
     justify-self: center;
     height: 24rem;
@@ -88,10 +103,22 @@ body {
   
   button:hover {
     background-color: whitesmoke;
-    border: #e04b52 solid 1px;
-    color: #e04b52;
+    border: #000000 solid 1px;
+    color: #000000;
   }
-  
+
+#decks {
+  margin-bottom: -10px;
+}
+
+#deckInput {
+  margin-right: 10px;
+}
+
+.form-buttons {
+  margin-top: 10px;
+}
+
   .container {
     padding: 1rem;
     width: stretch;
@@ -99,6 +126,10 @@ body {
     display: none;
     background: #515DA2;
     opacity: .8;
+  }
+
+  .spacer {
+    margin-top: 10px;
   }
   
   .submit {
