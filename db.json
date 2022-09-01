@@ -5,6 +5,33 @@
       "value": "test1",
       "cards": [],
       "id": 1
+    },
+    {
+      "name": "test2",
+      "value": "test2",
+      "cards": [
+        {
+          "code": "10082",
+          "cost": 2,
+          "deck_limit": 3,
+          "faction_code": "shaper",
+          "faction_cost": 3,
+          "flavor": "It is rumored that g00ru himself studied at the temple, applying its teachings to cyberspace. Many runners have followed in his path, but none have reached its end.",
+          "illustrator": "Amit Dutta",
+          "keywords": "Location - Ritzy",
+          "pack_code": "tlm",
+          "position": 82,
+          "quantity": 3,
+          "side_code": "runner",
+          "stripped_text": "click: Place 1 power counter on Temple of the Liberated Mind. Hosted power counter: Gain click. Use this ability only on your turn and only once per turn.",
+          "stripped_title": "Temple of the Liberated Mind",
+          "text": "[click]: Place 1 power counter on Temple of the Liberated Mind.\n<strong>Hosted power counter:</strong> Gain [click]. Use this ability only on your turn and only once per turn.",
+          "title": "Temple of the Liberated Mind",
+          "type_code": "resource",
+          "uniqueness": true
+        }
+      ],
+      "id": 2
     }
   ]
 }

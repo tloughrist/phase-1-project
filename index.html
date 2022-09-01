@@ -12,14 +12,14 @@
         <div class="form-div" id="search-controls">
             <form id="decks">
                 <div class="form-label">Deck:</div>
-                <select class="control" id="collection-select">
+                <select class="control" id="active-deck">
                     <option class="collection" value="netrunnerdb">NetrunnerDB</option>
                 </select>
             </form>
             <form id="search">
                 <div id="selectors">
                     <div class="form-label">Faction:</div>
-                    <select class="control" id="faction-select">
+                    <select class="control" id="active-faction">
                         <option value="all" selected>All</option>
                         <option class="corp" value="corp">Corp</option>
                         <option class="corp" value="haas-bioroid">--Hass-Bioroid</option>
@@ -34,7 +34,7 @@
                         <option class="runner" value="shaper">--Shaper</option>
                     </select>
                     <div class="form-label">Card Type:</div>
-                    <select class="control" id="card-type-select">
+                    <select class="control" id="active-card-type">
                         <option value="any" selected>Any</option>
                         <option class="corp" value="identity">Identities</option>
                         <option class="corp" value="operation">Operations</option>
@@ -59,9 +59,9 @@
                     <div class="spacer"></div>
                     <button class="control" id="displayBtn">display deck</button>
                     <div class="spacer"></div>
-                    <button class="control" id="rmvBtn">delete current deck</button>
+                    <button class="control" id="removeBtn">delete current deck</button>
                     <div class="spacer"></div>
-                    <button class="control" id="addBtn">create new deck</button>
+                    <button class="control" id="createBtn">create new deck</button>
                 </div>
                 <div class="spacer"></div>
                 <div id="create-form">

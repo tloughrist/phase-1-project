@@ -1,478 +1,389 @@
-//Global variables
-let currentDeck = "netrunnerdb";
-let remoteDeckServer = "https://netrunnerdb.com/api/2.0/public/cards";
-let localDeckServer = "http://localhost:3000/decks";
-let selectedFaction = "all";
-let selectedCardType = "any";
-let deckSelectElement = 0;
-let factionSelectElement = 0;
-let cardTypeSelectElement = 0;
-const currentCards = [];
-let localDecks = [0];
-let filteredCards = [0];
-let currentDeckId = 0;
+//arrays to locally hold data from APIs
+const localDecks = [];
+const remoteCards = [];
 
+//populates the localDecks, active deck select and remoteCards arrays
+fetchData('decks')
+.then((result) => localDecks.push(...result))
+.then(() => localDecks.forEach((e) => {
+    addOption(e, document.getElementById('active-deck'))
+})
+);
 
-netrunnerdbDeckSelect();
+fetchData('remote')
+.then((result) => remoteCards.push(...result));
 
-//fetches data from netrunnerdb, pushes the cards into currentCards, displays a random card from currentCards
-function netrunnerdbDeckSelect() {
-    return fetchData('remote')
-    .then((response) => response.json())
-    .then((data) => currentCards.push(...data.data))
-    .then(() => console.log(currentCards))
-    .then(() => displayCards(randomCard(currentCards)))
-    .catch((error) => console.error('Fetch netrunnerdb Error:', error));
-}
-fetchData('decks');
-
-function fetchCardsRemote() {
-    return fetch(`${remoteDeckServer}`, {
-        headers: {
-            Accept: "application/json"
-        }
-    }) 
-};
-
-function fetchData(dataSource) {
-    if(dataSource === 'remote') {
-        return fetchCardsRemote();
-    } else if(dataSource === 'local') {
-        return fetchCardsLocal();
-    } else {
-        return fetchDecks();
-    }
-};
-
-//**Code to be run after DOM content loads**
+//assign event listeners to non-card buttons present on load
 document.addEventListener('DOMContentLoaded', () => {
-    
-    //Assign values to select elements
-    deckSelectElement = document.querySelector('#collection-select');
-    factionSelectElement = document.querySelector('#faction-select');
-    cardTypeSelectElement = document.querySelector('#card-type-select');
-
-    //Search button event listener
     document.getElementById('searchBtn').addEventListener('click', (e) => {
         e.preventDefault();
-        searchButton()
+        removeElements(document.querySelectorAll('.card-box'));
+        searchButton();
+        //resets form elements
+        document.getElementById('search').reset();
     });
-
-    //Random button event listener
     document.getElementById('randomBtn').addEventListener('click', (e) => {
         e.preventDefault();
+        removeElements(document.querySelectorAll('.card-box'));
         randomButton();
     });
-    
-    //Display button event listener
     document.getElementById('displayBtn').addEventListener('click', (e) => {
         e.preventDefault();
+        removeElements(document.querySelectorAll('.card-box'));
         displayButton();
     });
-
-    //delete button event listener
-    document.getElementById('rmvBtn').addEventListener('click', (e) => {
+    document.getElementById('removeBtn').addEventListener('click', (e) => {
         deleteButton();
     });
-
-    //Create button event listener
-    document.getElementById('addBtn').addEventListener('click', (e) => {
+    document.getElementById('createBtn').addEventListener('click', (e) => {
         e.preventDefault();
-
-        let newDeckField = document.createElement('input');
-        newDeckField.id = 'deckInput';
-        newDeckField.placeholder = 'Deck name';
-        newDeckField.classList.add('disposable');
-
-        let newDeckCreateBtn = document.createElement('button');
-        newDeckCreateBtn.id = 'createBtn';
-        newDeckCreateBtn.textContent = 'Submit Deck';
-        newDeckCreateBtn.classList.add('disposable');
-
-        document.getElementById('create-form').appendChild(newDeckField);
-        document.getElementById('create-form').appendChild(newDeckCreateBtn);
-        
-        //submit new deck
-        newDeckCreateBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            //Build empty deck
-            const emptyDeck = {
-                'name': newDeckField.value,
-                'value': newDeckField.value,
-                'cards': []
-            };
- 
-            //creates new object in json-server
-            fetch(`${localDeckServer}`, {
-                'method': 'POST',
-                'headers': {
-                    "Content-Type": "application/json",
-                    Accept: "application/json"
-                },
-                'body': JSON.stringify(emptyDeck)
-            })
-            .then((response) => response.json())
-            .then(function(data) {
-                fetchDecks();
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-
-            //Remove the new form elements
-            removeElements(document.querySelectorAll('.disposable'));
-        });
-    });
-
-    //event listeners for changes in the form select elements
-    deckSelectElement.addEventListener('change', () => {
-        currentDeck = deckSelectElement.value;
-        updateDeckId(currentDeck);
-        fetchCards();
-        if(currentDeck === 'netrunnerdb') {
-            fetchDecks();
-        }
-    });
-
-    factionSelectElement.addEventListener('change', () => {
-        selectedFaction = factionSelectElement.value;
-    });
-
-    cardTypeSelectElement.addEventListener('change', () => {
-        selectedCardType = cardTypeSelectElement.value;
+        createButton();
     });
 });
 
-//**Code running outside DOMContentLoaded event**
-
-//sets values based for search filters
-function setSelectValues(valueToChange, input) {
-    valueToChange = input;
-};
-
-//fetches the cards from the current deck
-function fetchCards() {
-    if(currentDeck === "netrunnerdb") {
-        fetchData('remote')
-        .then((response) => response.json())
-        .then(() => currentCards.splice(0,currentCards.length))
-        .then((data) => currentCards.push(...data.data))
-        .then(() => displayCards(randomCard(currentCards)))
+//functionality when search button is clicked
+function searchButton() {
+  
+    //get filtered cards
+    const activeDeck = document.getElementById('active-deck').value;
+    const activeCards = cardsFromDeck(activeDeck);
+    const filteredCards = filters(activeCards);
+  
+    //populate with new boxes containing filtered cards
+    if(filteredCards.length > 100) {
+        randomButton();
+        return tooManyAlert();
     } else {
-        fetchCardsLocal();
+        return displayCards(filteredCards);
     }
 };
 
-/*function fetchCardsRemote() {
-    //return the fetch request and chain on .then to encapsulate the dependent functions
-    fetch(`${remoteDeckServer}`, {
-        headers: {
-            Accept: "application/json"
-        }
-    })
-    .then((response) => response.json())
-    .then(function(data) {
-        //sets the current cards to the cards from netrunnerdb
-        currentCards = data.data;
-        return data.data;
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    })
-};*/
-
-function fetchCardsLocal() {
-    fetch(`${localDeckServer}/${currentDeckId}`, {
-        headers: {
-            Accept: "application/json"
-        }
-    })
-    .then((response) => response.json())
-    .then(function(data) {
-        //sets the current cards to the cards from netrunnerdb
-        currentCards.splice(0,currentCards.length)
-        currentCards.push(...data.cards);
-        //remove old card boxes
-        removeElements(document.querySelectorAll('.card-box'));
-        //Displays random card
-        displayCards(currentCards);
-        return data.cards;
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    })
+//functionality when random button is clicked
+function randomButton() {
+    
+    //get filtered cards
+    const activeDeck = document.getElementById('active-deck').value;
+    const activeCards = cardsFromDeck(activeDeck);
+    const filteredCards = filters(activeCards);
+    
+    //populate with new boxes containing filtered cards
+    return displayCards(randomCards(filteredCards, 1));
 };
 
-function fetchDecks() {
-    fetch(`${localDeckServer}`, {
-        headers: {
-            Accept: "application/json"
-        }
-    })
-    .then((response) => response.json())
-    .then(function(data) {
-        //sets the local decks to the decks from db.json
-        localDecks = data;
-        //removes existing deck options
-        const deckArray = Array.prototype.slice.call(document.getElementsByClassName('new-deck'));
-        removeElements(deckArray);
-        //sets new deck options
-        setDeckOptions(deckSelectElement);
-        //remove old card boxes
-        //emoveElements(document.querySelectorAll('.card-box'));
-        //Displays random card
-        //displayCards(randomCard(currentCards));
-        return data;
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    })
-};
-
-//applies form filters to a given array
-function filter(arrayObjs) {
-    return searchFilter(cardTypeFilter(factionFilter(arrayObjs)));
-}
+//functionality when display button is clicked
+function displayButton() {
   
+    //get cards
+    const activeDeck = document.getElementById('active-deck').value;
+    const activeCards = cardsFromDeck(activeDeck);
+
+    //populate with new boxes containing filtered cards
+    if(activeCards.length > 100) {
+        randomButton();
+        return tooManyAlert();
+    } else {
+        return displayCards(activeCards);
+    }
+};
+
+//functionality when delete button is clicked
+function deleteButton() {
+
+    //get active deck Id
+    const activeDeck = document.getElementById('active-deck').value;
+    const activeDeckId = objectId(activeDeck, localDecks);
+    
+    //delete active deck
+    return fetch(`http://localhost:3000/decks/${activeDeckId}`, {
+        'method': 'DELETE'
+    })
+};
+
+//functionality when create button is clicked
+function createButton() {
+    const newDeckField = document.createElement('input');
+    newDeckField.id = 'deck-input';
+    newDeckField.placeholder = 'Deck name';
+    newDeckField.classList.add('disposable');
+
+    const newDeckCreateBtn = document.createElement('button');
+    newDeckCreateBtn.id = 'createBtn';
+    newDeckCreateBtn.textContent = 'Submit Deck';
+    newDeckCreateBtn.classList.add('disposable');
+    newDeckCreateBtn.addEventListener('click', (e) => {
+        newDeckCreateButton();
+    });
+
+    document.getElementById('create-form').appendChild(newDeckField);
+    document.getElementById('create-form').appendChild(newDeckCreateBtn);
+};
+
+//add options to a select element
+function addOption(option, selectElement) {
+    const newOption = document.createElement('option');
+    newOption.id = option.name;
+    newOption.value = option.name;
+    newOption.textContent = option.name;
+    newOption.classList.add('new-deck');
+    return selectElement.appendChild(newOption);
+};
+      
+//returns a promise of updating the json-server
+function newDeckCreateButton() {
+    
+    const newDeckName = document.getElementById('deck-input').value
+
+    //Build empty deck
+    const emptyDeck = {
+        'name': newDeckName,
+        'value': newDeckName,
+        'cards': []
+    };
+
+    //creates new object in json-server
+    return fetch("http://localhost:3000/decks/", {
+        'method': 'POST',
+        'headers': {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+        },
+        'body': JSON.stringify(emptyDeck)
+    })
+    .catch((error) => {
+        console.error('Error posting new deck:', error);
+    });
+};
+
+//gets the cards from the named deck
+function cardsFromDeck(deckName) {
+    if(deckName === 'netrunnerdb') {
+        return remoteCards;
+    } else {
+        const deck = localDecks.filter((e) => e.name === deckName);
+        return deck[0].cards;
+    }
+};
+
+//applies all filters
+function filters(cards) {
+    return searchFilter(cardTypeFilter(factionFilter(cards)));
+};
+
 //filters cards based on faction
-function factionFilter(arrayObjs) {
-    if(selectedFaction === 'all') {
-        return arrayObjs;
-    } else if (selectedFaction === 'corp' || selectedFaction === 'runner') {
-        return arrayObjs.filter(function (el) {
-            return el.side_code === `${selectedFaction}`;
+function factionFilter(cards) {
+    const activeFaction = document.getElementById('active-faction').value;
+    if(activeFaction === 'all') {
+        return cards;
+    } else if (activeFaction === 'corp' || activeFaction === 'runner') {
+        return cards.filter(function (el) {
+            return el.side_code === `${activeFaction}`;
         });
     } else {
-        return arrayObjs.filter(function (el) {
-            return el.faction_code === `${selectedFaction}`
+        return cards.filter(function (el) {
+            return el.faction_code === `${activeFaction}`
         });
     }
 };
 
 //filters cards based on card type
-function cardTypeFilter(arrayObjs) {
-    if(selectedCardType === 'any') {
-        return arrayObjs;
+function cardTypeFilter(cards) {
+    const activeCardType = document.getElementById('active-card-type').value;
+    if(activeCardType === 'any') {
+        return cards;
     } else {
-        return arrayObjs.filter(function (el) {
-            return el.type_code === `${selectedCardType}`;
+        return cards.filter(function (el) {
+            return el.type_code === `${activeCardType}`;
         });
     }
 };
 
 //filters cards by search
-function searchFilter(arrayObjs) {
+function searchFilter(cards) {
     if(document.querySelector('#card_name').value === undefined) {
-        return arrayObjs;
+        return cards;
     } else {
-        return arrayObjs.filter(function (el) {
+        return cards.filter(function (el) {
             return el.title.toLowerCase().includes(document.querySelector('#card_name').value.toLowerCase());
         });
     }
 };
 
-//function for random button
-function randomButton() {
-    //remove old card boxes
-    removeElements(document.querySelectorAll('.card-box'));
-    //update filtered cards
-    filteredCards = filter(currentCards);
-    //populate with new random box
-    displayCards(randomCard(filteredCards));
-};
-
-function randomCard(cards) {
-    let randCard = [];
-    randCard.push(cards[randArrayItem(cards)]);
-    return randCard;
-};
-
-function randArrayItem(array) {
-    if(array === undefined) {
-        console.log(-1)
-        return -1;
-    } else {
-        console.log(array)
-        let randIndex = Math.floor(Math.random() * (array.length));
-        console.log(randIndex)
-        return randIndex;
-    }
-};
-
-function searchButton() {
-    //remove old card boxes
-    removeElements(document.querySelectorAll('.card-box'));
-    //update filtered cards
-    filteredCards = filter(currentCards);
-    //populate with new boxes containing searched cards
-    console.log(filteredCards.length)
-    if(filteredCards.length > 100) {
-        tooManyAlert();
-    } else {
-    displayCards(filteredCards);
-    }
-
-    //resets form elements and misc. values
-    document.getElementById('search').reset();
-    selectedFaction = factionSelectElement.value;
-    selectedCardType = cardTypeSelectElement.value;
-};
-
-function displayButton() {
-    //remove old card boxes
-    removeElements(document.querySelectorAll('.card-box'));
-    //populate with new boxes containing all cards in deck
-    if(currentCards.length > 100) {
-        tooManyAlert();
-    } else {
-        displayCards(currentCards);
-    }
-};
-
-function deleteButton() {
-    fetch(`http://localhost:3000/decks/${currentDeckId}`, {
-        'method': 'DELETE'
-    })
-};
-
 //behavior if too many cards are called for
 function tooManyAlert() {
-    randomButton();
-    alert("Too Many Cards to Display");
+    return alert("Too Many Cards to Display");
 };
-
+    
 //removes current boxes
 function removeElements(elementArray) {
-    elementArray.forEach((e) => {
+    return elementArray.forEach((e) => {
         e.remove();
     });
 };
 
-//display handler
+//displays all the cards from a given array of cards
 function displayCards(cards) {
-    cards.forEach((e) => {
-        createCardBox(e);
+    const cardArea = document.getElementById('cardblock');
+    return cards.forEach((e) => {
+        cardArea.appendChild(createCardBox(e));
     });
 };
 
-//creates and appends card boxes
+//returns a complete card box for display
 function createCardBox(card) {
+
     //build the cardBox itself
     const cardBox = document.createElement('div');
     cardBox.classList.add('card-box');
+    cardBox.id = `${card.code}`;
 
     //build the cardBox elements
+    const cardImg = document.createElement('img');
+    cardImg.classList.add('card-image');
+    cardImg.src = `https://static.nrdbassets.com/v1/large/${card.code}.jpg`;
+
     const cardName = document.createElement('h3');
     cardName.textContent = `${card.title}`;
 
     const faction = document.createElement('p');
     faction.textContent = `faction: ${card.faction_code}`;
 
-    const cardImg = document.createElement('img');
-    cardImg.classList.add('card-image');
-    cardImg.src = `https://static.nrdbassets.com/v1/large/${card.code}.jpg`;
+    const horLine = document.createElement('hr');
+    horLine.classList.add('demarcation');
+    horLine.id = 'card-demarcator';
 
-    const cardDeckSelect = document.createElement('select');
-    cardDeckSelect.id = 'collection-add';
-    setDeckOptions(cardDeckSelect);
+    const modifyDeckSelect = document.createElement('select');
+    modifyDeckSelect.id = 'collection-add';
+    localDecks.forEach((e) => {
+        addOption(e, modifyDeckSelect);
+    });
 
     const addBtn = document.createElement('button');
     addBtn.classList.add('addBtn');
-    addBtn.textContent = 'Add to Collection';
-    addButton(addBtn, card, cardDeckSelect);
+    addBtn.textContent = 'Add to Deck';
+    addBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        addButton(card, modifyDeckSelect.value)
+        alert(`${card.title} added to ${modifyDeckSelect.value}`);
+    });
 
     const removeBtn = document.createElement('button');
     removeBtn.classList.add('removeBtn');
-    removeBtn.textContent = 'Remove from Collection';
-    removeButton(removeBtn, card);
+    removeBtn.textContent = 'Remove from Deck';
+    removeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        removeButton(card, modifyDeckSelect.value)
+        alert(`${card.title} removed from ${modifyDeckSelect.value}`)
+    });
     
     //append the elements
     cardBox.appendChild(cardImg);
     cardBox.appendChild(cardName);
     cardBox.appendChild(faction);
-    cardBox.appendChild(cardDeckSelect);
+    cardBox.appendChild(horLine);
+    cardBox.appendChild(modifyDeckSelect);
     cardBox.appendChild(addBtn);
     cardBox.appendChild(removeBtn);
     
-    //append the cardBox
-    document.getElementById('cardblock').append(cardBox);
+    return cardBox;
 };
 
-function addButton(button, card, selectElement) {
-    button.addEventListener('click', (e) => {
-        e.preventDefault();
-        let modifyDeckId = -1;
-        //filter to find deck with name matching collectionAddSelect.value and assign deck id to modifyDeckId
-        let modifyDeck = localDecks.filter(function (el) {
-            return el.name === selectElement.value;
-        });
-        modifyDeckId = modifyDeck[0].id;
-        modifyDeckIndex = localDecks.indexOf(modifyDeck[0]);
+//adds the current card to the named deck
+function addButton(card, deckName) {
+    const deckCards = cardsFromDeck(deckName);
+    const deckId = objectId(deckName, localDecks);
+    deckCards.push(card);
 
-        //add the current card to the array of cards
-        let modifyDeckCards = localDecks[modifyDeckIndex].cards;
-        modifyDeckCards.push(card);
-        console.log(modifyDeckCards)
-
-        fetch(`http://localhost:3000/decks/${modifyDeckId}`, {
-            'method': 'PATCH',
-            'headers': {
-            "Content-Type": "application/json",
-            Accept: "application/json"
-            },
-            'body': JSON.stringify({
-                "cards": modifyDeckCards
-            })
+    return fetch(`http://localhost:3000/decks/${deckId}`, {
+        'method': 'PATCH',
+        'headers': {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+        },
+        'body': JSON.stringify({
+            "cards": deckCards
         })
-        .then((response) => response.json())
-        .then(function(data) {
-            //console.log(data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        })
-        alert(`${card.title} added to ${selectElement.value}`);
-        });
-};
-
-function removeButton(button, card) {
-    button.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        /*
-
-        */
-
-
-        alert(`${card.title} removed from ${selectElement.value}`);
-        });
-};
-
-//add options to a select element
-function addOption(optionName, selectElement) {
-    const newOption = document.createElement('option');
-    newOption.id = optionName;
-    newOption.value = optionName;
-    newOption.textContent = optionName;
-    newOption.classList.add('new-deck');
-    selectElement.appendChild(newOption);
-};
-
-//updates currentDeckId to the id...of the current deck
-function updateDeckId(deckName) {
-    if(deckName === 'netrunnerdb') {
-        currentDeckId = -1;
-    } else {
-        const deckObj = localDecks.filter(function (el) {
-            return el.name === deckName;
-        });
-        currentDeckId = deckObj[0].id;
-    };
-};
-
-function setDeckOptions(selectElement) {
-    localDecks.forEach((e) => {
-        addOption(e.name, selectElement);
     });
+};
+
+//removes the current card from the named deck
+function removeButton(card, deckName) {
+    const deckCards = cardsFromDeck(deckName);
+    const deckId = objectId(deckName, localDecks);
+    const cardIndex = deckCards.indexOf(card);
+    deckCards.splice(cardIndex, 1);
+    document.getElementById(`${card.code}`).remove();
+    return fetch(`http://localhost:3000/decks/${deckId}`, {
+        'method': 'PATCH',
+        'headers': {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+        },
+        'body': JSON.stringify({
+            "cards": deckCards
+        })
+    });
+};
+
+//returns an array of a given length of random cards from a given array of cards
+function randomCards(cards, number) {
+    let numberOfCards = -1;
+    if(cards.length < number) {
+        numberOfCards = cards.length;
+    } else {
+        numberOfCards = number;
+    }
+    const randomCards = [];
+    for(i = 1; i <= numberOfCards; i++) {
+        let randNumber = randIndex(cards.length);
+        randomCards.push(cards[randNumber]);
+    };
+    return randomCards;
+};
+
+//returns a random index from a given array provided the array
+function randIndex(arrayLength) {
+    let randIndex = Math.floor(Math.random() * (arrayLength));
+    return randIndex;
+};
+
+//returns data from the designated source: local, remote, or decks
+function fetchData(dataSource) {
+    if(dataSource === 'remote') {
+        return genericFetch("https://netrunnerdb.com/api/2.0/public/cards")
+        .then((response) => response.json())
+        .then((data) => data.data)
+        .catch((error) => console.error('Fetch netrunnerdb Error:', error));
+    } else if(dataSource === 'local') {
+        return genericFetch(`http://localhost:3000/decks/${activeDeckId()}`)
+        .then((response) => response.json())
+        .then((data) => data.cards)
+        .catch((error) => console.error('Fetch local cards Error:', error));;
+    } else {
+        return genericFetch(`http://localhost:3000/decks`)
+        .then((response) => response.json())
+        .then((data) => data)
+        .catch((error) => console.error('Fetch local decks Error:', error));;
+    }
+};
+
+//generic json fetch GET request
+function genericFetch(url) {
+    return fetch(`${url}`, {
+        headers: {
+            Accept: "application/json"
+        }
+    }) 
+};
+
+//returns id of active deck
+function activeDeckId() {
+    const activeDeckName = document.getElementById('active-deck').value;
+    const deckLocation = localDecks;
+    return objectId(activeDeckName, deckLocation);
+};
+
+//returns id of current deck
+function objectId(objectName, location) {
+    const targetObj = location.filter((e) => e.name === objectName);
+    return targetObj[0].id;
 };
