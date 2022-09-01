@@ -7,14 +7,42 @@ let selectedCardType = "any";
 let deckSelectElement = 0;
 let factionSelectElement = 0;
 let cardTypeSelectElement = 0;
-let currentCards = [0];
+const currentCards = [];
 let localDecks = [0];
 let filteredCards = [0];
 let currentDeckId = 0;
 
-//initial fetch and populate
-fetchCardsRemote();
-fetchDecks();
+
+netrunnerdbDeckSelect();
+
+//fetches data from netrunnerdb, pushes the cards into currentCards, displays a random card from currentCards
+function netrunnerdbDeckSelect() {
+    return fetchData('remote')
+    .then((response) => response.json())
+    .then((data) => currentCards.push(...data.data))
+    .then(() => console.log(currentCards))
+    .then(() => displayCards(randomCard(currentCards)))
+    .catch((error) => console.error('Fetch netrunnerdb Error:', error));
+}
+fetchData('decks');
+
+function fetchCardsRemote() {
+    return fetch(`${remoteDeckServer}`, {
+        headers: {
+            Accept: "application/json"
+        }
+    }) 
+};
+
+function fetchData(dataSource) {
+    if(dataSource === 'remote') {
+        return fetchCardsRemote();
+    } else if(dataSource === 'local') {
+        return fetchCardsLocal();
+    } else {
+        return fetchDecks();
+    }
+};
 
 //**Code to be run after DOM content loads**
 document.addEventListener('DOMContentLoaded', () => {
@@ -126,13 +154,18 @@ function setSelectValues(valueToChange, input) {
 //fetches the cards from the current deck
 function fetchCards() {
     if(currentDeck === "netrunnerdb") {
-        currentCards = fetchCardsRemote();
+        fetchData('remote')
+        .then((response) => response.json())
+        .then(() => currentCards.splice(0,currentCards.length))
+        .then((data) => currentCards.push(...data.data))
+        .then(() => displayCards(randomCard(currentCards)))
     } else {
-        currentCards = fetchCardsLocal();
+        fetchCardsLocal();
     }
 };
 
-function fetchCardsRemote() {
+/*function fetchCardsRemote() {
+    //return the fetch request and chain on .then to encapsulate the dependent functions
     fetch(`${remoteDeckServer}`, {
         headers: {
             Accept: "application/json"
@@ -147,7 +180,7 @@ function fetchCardsRemote() {
     .catch((error) => {
         console.error('Error:', error);
     })
-};
+};*/
 
 function fetchCardsLocal() {
     fetch(`${localDeckServer}/${currentDeckId}`, {
@@ -158,7 +191,8 @@ function fetchCardsLocal() {
     .then((response) => response.json())
     .then(function(data) {
         //sets the current cards to the cards from netrunnerdb
-        currentCards = data.cards;
+        currentCards.splice(0,currentCards.length)
+        currentCards.push(...data.cards);
         //remove old card boxes
         removeElements(document.querySelectorAll('.card-box'));
         //Displays random card
@@ -186,9 +220,9 @@ function fetchDecks() {
         //sets new deck options
         setDeckOptions(deckSelectElement);
         //remove old card boxes
-        removeElements(document.querySelectorAll('.card-box'));
+        //emoveElements(document.querySelectorAll('.card-box'));
         //Displays random card
-        displayCards(randomCard(currentCards));
+        //displayCards(randomCard(currentCards));
         return data;
     })
     .catch((error) => {
@@ -256,9 +290,12 @@ function randomCard(cards) {
 
 function randArrayItem(array) {
     if(array === undefined) {
-        return 0;
+        console.log(-1)
+        return -1;
     } else {
+        console.log(array)
         let randIndex = Math.floor(Math.random() * (array.length));
+        console.log(randIndex)
         return randIndex;
     }
 };
@@ -371,7 +408,6 @@ function addButton(button, card, selectElement) {
             return el.name === selectElement.value;
         });
         modifyDeckId = modifyDeck[0].id;
-
         modifyDeckIndex = localDecks.indexOf(modifyDeck[0]);
 
         //add the current card to the array of cards
@@ -391,18 +427,25 @@ function addButton(button, card, selectElement) {
         })
         .then((response) => response.json())
         .then(function(data) {
-            console.log(data);
+            //console.log(data);
         })
         .catch((error) => {
             console.error('Error:', error);
         })
-        alert(`${card.title} added to ...`);
+        alert(`${card.title} added to ${selectElement.value}`);
         });
 };
 
 function removeButton(button, card) {
     button.addEventListener('click', (e) => {
-        alert(`${card.title} removed from ...`);
+        e.preventDefault();
+
+        /*
+
+        */
+
+
+        alert(`${card.title} removed from ${selectElement.value}`);
         });
 };
 
@@ -433,4 +476,3 @@ function setDeckOptions(selectElement) {
         addOption(e.name, selectElement);
     });
 };
-

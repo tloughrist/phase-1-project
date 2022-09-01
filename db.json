@@ -1,4 +1,10 @@
 {
   "decks": [
+    {
+      "name": "test1",
+      "value": "test1",
+      "cards": [],
+      "id": 1
+    }
   ]
 }
