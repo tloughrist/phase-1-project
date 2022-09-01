@@ -3,18 +3,24 @@ body {
     font-family: monospace;
     background-color: lightgrey;
   }
+
+footer {
+  justify-content: center;
+  margin-left: 10px;
+
+}
   
   #banner {
     display: flex;
     justify-content: left;
-    background: gray;
+    background: rgb(67, 67, 67);
     opacity: .8;
     height: 4rem;
     padding: 1rem;
   }
   
   #bannerImg {
-    height: 3rem;
+    height: 4rem;
     width: auto;
   }
   
@@ -31,6 +37,11 @@ body {
   #collection-select {
     position: relative;
     align-self: auto;
+  }
+
+  .demarcation {
+    width: 50%;
+    height: 1px;
   }
 
   .form-div {
