@@ -9,7 +9,18 @@ footer {
   margin-left: 10px;
 
 }
-  
+  .hover {
+    text-align: center;
+    border: grey solid 1px;
+    background-color: rgb(255, 185, 185);
+    padding: 1rem;
+    width: 20rem;
+    height: 40rem;
+    display: inline-grid;
+    margin: 1rem 2rem;
+    box-shadow: 5px 6px darkgrey;
+  }
+
   #banner {
     display: flex;
     justify-content: left;
@@ -86,6 +97,13 @@ footer {
     justify-self: center;
     height: 24rem;
     width: auto;
+  }
+
+  .zoom {
+    height: 48rem;
+    width: auto;
+    z-index: 100;
+    position: sticky;
   }
 
   .control {

@@ -242,6 +242,14 @@ function createCardBox(card) {
     const cardImg = document.createElement('img');
     cardImg.classList.add('card-image');
     cardImg.src = `https://static.nrdbassets.com/v1/large/${card.code}.jpg`;
+    
+    //hover-zoom...not perfect
+    cardImg.addEventListener('mouseover', (e) => {
+        cardImg.classList.add('zoom');
+    });
+    cardImg.addEventListener('mouseout', (e) => {
+        cardImg.classList.remove('zoom');
+    });
 
     const cardName = document.createElement('h3');
     cardName.textContent = `${card.title}`;
@@ -275,7 +283,10 @@ function createCardBox(card) {
         removeButton(card, modifyDeckSelect.value)
         alert(`${card.title} removed from ${modifyDeckSelect.value}`)
     });
-    
+
+   
+
+
     //append the elements
     cardBox.appendChild(cardImg);
     cardBox.appendChild(cardName);
@@ -284,7 +295,7 @@ function createCardBox(card) {
     cardBox.appendChild(modifyDeckSelect);
     cardBox.appendChild(addBtn);
     cardBox.appendChild(removeBtn);
-    
+
     return cardBox;
 };
 
