@@ -11,7 +11,7 @@ The app uses the excellent [NetrunnerDB API](https://netrunnerdb.com/api/2.0/doc
 The project is currently in beta and I'd appreciate any feedback!
 
 ## Demo Video
-[![A link to a demo video](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/e5T7n_SJtcU)
+[![A link to a demo video](https://timloughrist.files.wordpress.com/2022/09/ksnip_20220902-144258.png)](https://youtu.be/e5T7n_SJtcU)
 
 ## Installation
 The current version of the app simulates a server for storing deck information using [JSON-server](https://www.npmjs.com/package/json-server).
