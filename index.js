@@ -41,6 +41,14 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         createButton();
     });
+
+    document.getElementById('active-deck').addEventListener('change', (e) => {
+        removeElements(document.querySelectorAll('.card-box'));
+        if(document.getElementById('active-deck').value === 'netrunnerdb') {
+            return displayCards(randomCards(remoteCards, 50));
+        } else {
+            return displayButton()};
+    });
 });
 
 //functionality when search button is clicked
@@ -53,7 +61,8 @@ function searchButton() {
   
     //populate with new boxes containing filtered cards
     if(filteredCards.length > 100) {
-        randomButton();
+        removeElements(document.querySelectorAll('.card-box'));
+        displayCards(randomCards(filteredCards, 50));
         return tooManyAlert();
     } else {
         return displayCards(filteredCards);
@@ -108,22 +117,26 @@ function createButton() {
     newDeckField.placeholder = 'Deck name';
     newDeckField.classList.add('disposable');
 
+    const spacer = document.createElement('div');
+    spacer.classList.add('spacer');
+
     const newDeckCreateBtn = document.createElement('button');
     newDeckCreateBtn.id = 'createBtn';
     newDeckCreateBtn.textContent = 'Submit Deck';
     newDeckCreateBtn.classList.add('disposable');
+    newDeckCreateBtn.classList.add('.form-buttons');
     newDeckCreateBtn.addEventListener('click', (e) => {
         newDeckCreateButton();
     });
 
     document.getElementById('create-form').appendChild(newDeckField);
+    document.getElementById('create-form').appendChild(spacer);
     document.getElementById('create-form').appendChild(newDeckCreateBtn);
 };
 
 //add options to a select element
 function addOption(option, selectElement) {
     const newOption = document.createElement('option');
-    newOption.id = option.name;
     newOption.value = option.name;
     newOption.textContent = option.name;
     newOption.classList.add('new-deck');
@@ -242,15 +255,7 @@ function createCardBox(card) {
     const cardImg = document.createElement('img');
     cardImg.classList.add('card-image');
     cardImg.src = `https://static.nrdbassets.com/v1/large/${card.code}.jpg`;
-    
-    //hover-zoom...not perfect
-    cardImg.addEventListener('mouseover', (e) => {
-        cardImg.classList.add('zoom');
-    });
-    cardImg.addEventListener('mouseout', (e) => {
-        cardImg.classList.remove('zoom');
-    });
-
+ 
     const cardName = document.createElement('h3');
     cardName.textContent = `${card.title}`;
 
@@ -265,6 +270,9 @@ function createCardBox(card) {
     localDecks.forEach((e) => {
         addOption(e, modifyDeckSelect);
     });
+    const activeDeck = localDecks.filter((e) => e.name === document.getElementById('active-deck').value);
+    const activeDeckIndex = localDecks.indexOf(activeDeck[0]);
+    modifyDeckSelect.selectedIndex = activeDeckIndex;
 
     const addBtn = document.createElement('button');
     addBtn.classList.add('addBtn');
@@ -283,9 +291,6 @@ function createCardBox(card) {
         removeButton(card, modifyDeckSelect.value)
         alert(`${card.title} removed from ${modifyDeckSelect.value}`)
     });
-
-   
-
 
     //append the elements
     cardBox.appendChild(cardImg);

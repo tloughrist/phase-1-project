@@ -1,191 +1,159 @@
 body {
-    margin: 0;
-    font-family: monospace;
-    background-color: lightgrey;
-  }
-
-footer {
-  justify-content: center;
-  margin-left: 10px;
-
+  margin: 0;
+  font-family: monospace;
+  background-color: lightgrey;
 }
-  .hover {
-    text-align: center;
-    border: grey solid 1px;
-    background-color: rgb(255, 185, 185);
-    padding: 1rem;
-    width: 20rem;
-    height: 40rem;
-    display: inline-grid;
-    margin: 1rem 2rem;
-    box-shadow: 5px 6px darkgrey;
-  }
 
   #banner {
-    display: flex;
+    display: inline;
     justify-content: left;
     background: rgb(67, 67, 67);
     opacity: .8;
     height: 4rem;
     padding: 1rem;
-  }
-  
-  #bannerImg {
-    height: 4rem;
-    width: auto;
-  }
-  
-  #card-block {
-    margin: 2rem;
-  }
-  
-  #collection-add {
-    width: 8rem;
-    justify-self: center;
-    height: 1.5rem;
+    position: fixed;
+    width: 100%;
   }
 
-  #collection-select {
-    position: relative;
-    align-self: auto;
-  }
+    #bannerImg {
+      width: 25%;
+    }
 
-  .demarcation {
-    width: 50%;
-    height: 1px;
-  }
+    #stats {
+      width: 75%;
+    }
 
-  .form-div {
-    display: grid;
+  #main {
+    display: flexbox;
     flex-direction: row;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 10px;
-    justify-content: left;
-    margin-top: .5rem;
-    min-height: 1.5rem;
-    padding: .5rem;
-    background: rgb(203, 214, 255);
-    opacity: .8;
+    flex-wrap: nowrap;
+    min-height: 50rem;
+    align-items: stretch;
   }
 
-  .form-label {
-    margin-top: 10px;
+    .sidebar {
+      height: 100%;
+      width: 200;
+      position: fixed;
+      left: 0;
+      top: 6rem;
+      padding: 10px;
+      background-color: rgb(64, 135, 159);
+      }
+
+      #decks {
+        margin-bottom: -10px;
+      }
+
+      .form-label {
+        margin-top: 10px;
+      }
+
+      .form-buttons {
+        padding-top: 10px;
+      }
+
+      .control {
+        height: 1.5rem;
+      }
+
+        .corp {
+          background: lightblue;
+        }
+
+        .runner {
+          background: pink;
+        }
+      
+      #search {
+        padding-top: 10px;
+      }
+
+      .author {
+        position: absolute;
+        margin-top: 42rem;
+      }
+
+    .cardblock {
+      width: auto;
+      margin-left: 200px;
+      padding-top: 6rem;
+    }
+
+  footer {
+    justify-content: center;
+    margin-left: 10px;
   }
 
-  .card-box {
-    text-align: center;
-    border: grey solid 1px;
-    background-color: white;
-    padding: 1rem;
-    width: 20rem;
-    height: 40rem;
-    display: inline-grid;
-    margin: 1rem 2rem;
-    box-shadow: 3px 4px darkgrey;
-  }
-  
-.form-buttons {
+button {
+  position: relative;
+  background-color: rgb(22, 22, 22);
+  border: none;
+  border-radius: 5px;
+  height: 1.5rem;
+  width: max-content;
+  color: whitesmoke;
+  font-size: 14px;
+  justify-self: center;
+}
+
+button:hover {
+  background-color: whitesmoke;
+  border: #000000 solid 1px;
+  color: #000000;
+}
+
+.spacer {
   margin-top: 10px;
+}
+  
+/* These are items added to the cards as they're created */
+
+#collection-add {
+  width: 8rem;
+  justify-self: center;
+  height: 1.5rem;
+}
+
+#collection-select {
+  position: relative;
+  align-self: auto;
+}
+
+.demarcation {
+  width: 50%;
+  height: 1px;
+}
+
+.card-box {
+  text-align: center;
+  border: grey solid 1px;
+  background-color: white;
+  padding: 1rem;
+  width: 20rem;
+  height: 40rem;
+  display: inline-grid;
+  margin: 1rem 2rem;
+  box-shadow: 3px 4px darkgrey;
 }
 
 #card_name {
   height: 1.25rem;
 }
 
-  .card-image {
-    justify-self: center;
-    height: 24rem;
-    width: auto;
-  }
+.card-image {
+  justify-self: center;
+  height: 24rem;
+  width: auto;
+}
 
-  .zoom {
-    height: 48rem;
-    width: auto;
-    z-index: 100;
-    position: sticky;
-  }
-
-  .control {
-    height: 1.5rem;
-  }
-  
-  .corp {
-    background: lightblue;
-  }
-
-  .runner {
-    background: pink;
-  }
-
-  button {
-    position: relative;
-    background-color: rgb(22, 22, 22);
-    border: none;
-    border-radius: 5px;
-    height: 1.5rem;
-    width: max-content;
-    color: whitesmoke;
-    font-size: 14px;
-    justify-self: center;
-  }
-  
-  button:hover {
-    background-color: whitesmoke;
-    border: #000000 solid 1px;
-    color: #000000;
-  }
-
-#decks {
-  margin-bottom: -10px;
+.zoom {
+  height: 48rem;
+  width: auto;
+  z-index: 100;
+  position: sticky;
 }
 
 #deckInput {
   margin-right: 10px;
 }
-
-.form-buttons {
-  margin-top: 10px;
-}
-
-  .container {
-    padding: 1rem;
-    width: stretch;
-    height: auto;
-    display: none;
-    background: #515DA2;
-    opacity: .8;
-  }
-
-  .spacer {
-    margin-top: 10px;
-  }
-  
-  .submit {
-    position: relative;
-    background-color: #e04b52;
-    border-radius: 5px;
-    height: 2rem;
-    width: max-content;
-    color: whitesmoke;
-    font-size: 18px;
-    justify-self: center;
-    font-family: monospace;
-    margin: 3px;
-  }
-  
-  .submit:hover {
-    background-color: whitesmoke;
-    border: #e04b52 solid 1px;
-    color: #e04b52;
-  }
-  
-  
-  .input-text {
-    border-radius: 5px;
-    height: 2rem;
-    width: 60%;
-    font-size: 18px;
-    font-family: monospace;
-    margin: 3px;
-  }

@@ -7,73 +7,79 @@
     </head>
     <body>
         <div id="banner">
-            <img id="bannerImg" src="https://timloughrist.files.wordpress.com/2022/09/nisei_deck_builder.png">
+            <div class="banner" id="banner-img">
+                <img id="logo" src="https://timloughrist.files.wordpress.com/2022/09/nisei_deck_builder.png">
+            </div>
+            <div class="banner" id="stats">
+            </div>
         </div>
-        <div class="form-div" id="search-controls">
-            <form id="decks">
-                <div class="form-label">Deck:</div>
-                <select class="control" id="active-deck">
-                    <option class="collection" value="netrunnerdb">NetrunnerDB</option>
-                </select>
-            </form>
-            <form id="search">
-                <div id="selectors">
-                    <div class="form-label">Faction:</div>
-                    <select class="control" id="active-faction">
-                        <option value="all" selected>All</option>
-                        <option class="corp" value="corp">Corp</option>
-                        <option class="corp" value="haas-bioroid">--Hass-Bioroid</option>
-                        <option class="corp" value="jinteki">--Jinteki</option>
-                        <option class="corp" value="nbn">--NBN</option>
-                        <option class="corp" value="neutral-corp">--Neutral-Corp</option>
-                        <option class="corp" value="weyland-consortium">--Weyland Consortium</option>
-                        <option class="runner" value="runner">Runner</option>
-                        <option class="runner" value="anarch">--Anarch</option>
-                        <option class="runner" value="criminal">--Criminal</option>
-                        <option class="runner" value="neutral-runner">--Neutral-Runner</option>
-                        <option class="runner" value="shaper">--Shaper</option>
+        <div id="main">
+            <div class="sidebar" id="search-controls">
+                <div class="author">
+                    <p>Author: Tim Loughrist</p>
+                    <p><a href="mailto:tim.loughrist@gmail.com">tim.loughrist@gmail.com</a></p>
+                </div>
+                <form id="decks">
+                    <div class="form-label">Deck:</div>
+                    <select class="control" id="active-deck">
+                        <option class="collection" value="netrunnerdb">NetrunnerDB</option>
                     </select>
-                    <div class="form-label">Card Type:</div>
-                    <select class="control" id="active-card-type">
-                        <option value="any" selected>Any</option>
-                        <option class="corp" value="identity">Identities</option>
-                        <option class="corp" value="operation">Operations</option>
-                        <option class="corp" value="agenda">Agendas</option>
-                        <option class="corp" value="ice">Ice</option>
-                        <option class="corp" value="upgrade">Upgrades</option>
-                        <option class="corp" value="asset">Assets</option>
-                        <option class="runner" value="hardware">Hardware</option>
-                        <option class="runner" value="resource">Resources</option>
-                        <option class="runner" value="program">Programs</option>
-                        <option class="runner" value="event">Events</option>
-                    </select>
-                    <div class="form-label">Card Name:</div>
-                    <input class="control" id="card_name" type="text"></input>
-                </div>
-                <div class="spacer"></div>
-                <hr>
-                <div class="spacer"></div>
-                <div class="form-buttons">
-                    <button class="control" id="searchBtn">search</button>
-                    <button class="control" id="randomBtn">random</button>
+                </form>
+                <form id="search">
+                    <div id="selectors">
+                        <div class="form-label">Faction:</div>
+                        <select class="control" id="active-faction">
+                            <option value="all" selected>All</option>
+                            <option class="corp" value="corp">Corp</option>
+                            <option class="corp" value="haas-bioroid">--Hass-Bioroid</option>
+                            <option class="corp" value="jinteki">--Jinteki</option>
+                            <option class="corp" value="nbn">--NBN</option>
+                            <option class="corp" value="neutral-corp">--Neutral-Corp</option>
+                            <option class="corp" value="weyland-consortium">--Weyland Consortium</option>
+                            <option class="runner" value="runner">Runner</option>
+                            <option class="runner" value="anarch">--Anarch</option>
+                            <option class="runner" value="criminal">--Criminal</option>
+                            <option class="runner" value="neutral-runner">--Neutral-Runner</option>
+                            <option class="runner" value="shaper">--Shaper</option>
+                        </select>
+                        <div class="form-label">Card Type:</div>
+                        <select class="control" id="active-card-type">
+                            <option value="any" selected>Any</option>
+                            <option class="corp" value="identity">Identities</option>
+                            <option class="corp" value="operation">Operations</option>
+                            <option class="corp" value="agenda">Agendas</option>
+                            <option class="corp" value="ice">Ice</option>
+                            <option class="corp" value="upgrade">Upgrades</option>
+                            <option class="corp" value="asset">Assets</option>
+                            <option class="runner" value="hardware">Hardware</option>
+                            <option class="runner" value="resource">Resources</option>
+                            <option class="runner" value="program">Programs</option>
+                            <option class="runner" value="event">Events</option>
+                        </select>
+                        <div class="form-label">Card Name:</div>
+                        <input class="control" id="card_name" type="text"></input>
+                    </div>
                     <div class="spacer"></div>
-                    <button class="control" id="displayBtn">display deck</button>
+                    <hr>
                     <div class="spacer"></div>
-                    <button class="control" id="removeBtn">delete current deck</button>
+                    <div class="form-buttons">
+                        <button class="control" id="searchBtn">search</button>
+                        <button class="control" id="randomBtn">random</button>
+                        <div class="spacer"></div>
+                        <button class="control" id="displayBtn">display deck</button>
+                        <div class="spacer"></div>
+                        <button class="control" id="removeBtn">delete current deck</button>
+                        <div class="spacer"></div>
+                        <button class="control" id="createBtn">create new deck</button>
+                    </div>
                     <div class="spacer"></div>
-                    <button class="control" id="createBtn">create new deck</button>
-                </div>
-                <div class="spacer"></div>
-                <div id="create-form">
-                </div>
-            </form>
-        </div>
-        <div id="cardblock">
+                    <div id="create-form">
+                    </div>
+                </form>
+            </div>
+            <div class="main cardblock" id="cardblock">
+            </div>
         </div>
         <script type="text/javascript" src="file:///home/timloughrist/Code/Flatiron/phase-01/phase-1-project/index.js"></script>
-        <footer>
-            <p>Author: Tim Loughrist</p>
-            <p><a href="mailto:tim.loughrist@gmail.com">tim.loughrist@gmail.com</a></p>
-        </footer>
     </body>
 </html>

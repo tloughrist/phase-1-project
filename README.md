@@ -11,7 +11,7 @@ The app uses the excellent [NetrunnerDB API](https://netrunnerdb.com/api/2.0/doc
 The project is currently in beta and I'd appreciate any feedback!
 
 ## Demo Video
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+[![A link to a demo video](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/e5T7n_SJtcU)
 
 ## Installation
 The current version of the app simulates a server for storing deck information using [JSON-server](https://www.npmjs.com/package/json-server).
@@ -42,19 +42,17 @@ I hope the app is mostly self-explanatory, but here are some notes just the same
 
 **Remove a card from a deck:** on the desired card, select the desired deck and hit 'remove from deck'. You'll get an alert letting you know it was successful.
 
-If you can't read a card's text, simply hover your mouse over it to enlarge it.
-
 ## Support
 If you have any questions about the app or suggestions, please send me an email at tim.loughrist@gmail.com.
 
 ## Roadmap
-1. The styling of the app needs to be cleaned up considerably.
-2. Display information about the active deck, e.g., number of cards, faction, agenda points, etc.
-3. Validate whether the deck is legal.
-4. Validate deck names, prevent duplicates, etc.
-5. Validate card-adds, preventing duplicates, illegal adds, etc.
-6. Include an element on each card to select how many of that card you'd like to add or remove.
-7. Print a card list of all the cards in a deck.
+1. Display information about the active deck, e.g., number of cards, faction, agenda points, etc.
+2. Validate whether the deck is legal.
+3. Validate deck names, prevent duplicates, etc.
+4. Validate card-adds, preventing duplicates, illegal adds, etc.
+5. Include an element on each card to select how many of that card you'd like to add or remove.
+6. Print a card list of all the cards in a deck.
+7. A card magnifying glass.
 
 ## Contributing
 If anyone wants to fork this repo and work on the app, I'd love to see what you do with it!
