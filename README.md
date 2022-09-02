@@ -46,6 +46,8 @@ I hope the app is mostly self-explanatory, but here are some notes just the same
 If you have any questions about the app or suggestions, please send me an email at tim.loughrist@gmail.com.
 
 ## Roadmap
+In the future, I'd like to add the following features:
+
 1. Display information about the active deck, e.g., number of cards, faction, agenda points, etc.
 2. Validate whether the deck is legal.
 3. Validate deck names, prevent duplicates, etc.
