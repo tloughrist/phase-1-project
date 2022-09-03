@@ -24,7 +24,6 @@ To start the server, run:
 ```
 json-server --watch db.json
 ```
-Obviously, you'll need to change the href for both the css and the JavaScript files in index.html.
 
 ## Usage
 I hope the app is mostly self-explanatory, but here are some notes just the same.
