@@ -2,7 +2,7 @@
 const localDecks = [];
 const remoteCards = [];
 
-//populates the localDecks, active deck select and remoteCards arrays, display 52 cards
+//populates the localDecks, active deck select and remoteCards arrays
 const initialFetchDecks = fetchData('decks')
 .then((result) => {
     return localDecks.push(...result);
@@ -18,6 +18,7 @@ const initialFetchCards = fetchData('remote')
     return remoteCards.push(...result)
 });
 
+//display random cards on load
 Promise.all([initialFetchCards, initialFetchDecks])
 .then(() => {
     return displayCards(randomCards(remoteCards, 52));
@@ -39,8 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         removeElements(document.querySelectorAll('.card-box'));
         return displayButton();
-    
-        //Proposed feature: set the value of the options on displayed cards to the value of the active deck
     });
     document.getElementById('removeBtn').addEventListener('click', (e) => {
         return deleteButton();
@@ -49,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         return createButton();
     });
-
     document.getElementById('active-deck').addEventListener('change', (e) => {
         removeElements(document.querySelectorAll('.card-box'));
         if(document.getElementById('active-deck').value === 'netrunnerdb') {

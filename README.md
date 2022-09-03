@@ -55,6 +55,10 @@ In the future, I'd like to add the following features:
 5. Include an element on each card to select how many of that card you'd like to add or remove.
 6. Print a card list of all the cards in a deck.
 7. A card magnifying glass.
+8. Preload winning decks from past tournaments.
+9. When custom decks are created or deleted, reload local decks, repopulate options without reloading page.
+10. Build a permanent API to store custom deck information.
+11. Logins to keep the custom decks of different users separate.
 
 ## Contributing
 If anyone wants to fork this repo and work on the app, I'd love to see what you do with it!
