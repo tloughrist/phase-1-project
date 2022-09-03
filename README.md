@@ -13,6 +13,8 @@ The project is currently in beta and I'd appreciate any feedback!
 ## Demo
 [![A link to a demo video](https://timloughrist.files.wordpress.com/2022/09/ksnip_20220902-144258.png)](https://youtu.be/e5T7n_SJtcU)
 
+Click the image above to watch a video demonstrating the app.
+
 Check out a demo version without custom deck functionality [here](https://tloughrist.github.io/phase-1-project/).
 
 ## Installation
