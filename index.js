@@ -2,50 +2,58 @@
 const localDecks = [];
 const remoteCards = [];
 
-//populates the localDecks, active deck select and remoteCards arrays
-fetchData('decks')
-.then((result) => localDecks.push(...result))
-.then(() => localDecks.forEach((e) => {
-    addOption(e, document.getElementById('active-deck'))
+//populates the localDecks, active deck select and remoteCards arrays, display 52 cards
+const initialFetchDecks = fetchData('decks')
+.then((result) => {
+    return localDecks.push(...result);
 })
-);
+.then(() => {
+    return localDecks.forEach((e) => {
+        return addOption(e, document.getElementById('active-deck'));
+    });
+});
 
-fetchData('remote')
-.then((result) => remoteCards.push(...result));
+const initialFetchCards = fetchData('remote')
+.then((result) => {
+    return remoteCards.push(...result)
+});
+
+Promise.all([initialFetchCards, initialFetchDecks])
+.then(() => {
+    return displayCards(randomCards(remoteCards, 52));
+});
 
 //assign event listeners to non-card buttons present on load
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('searchBtn').addEventListener('click', (e) => {
         e.preventDefault();
         removeElements(document.querySelectorAll('.card-box'));
-        searchButton();
-        //resets form elements
-        document.getElementById('search').reset();
+        return searchButton();  
     });
     document.getElementById('randomBtn').addEventListener('click', (e) => {
         e.preventDefault();
         removeElements(document.querySelectorAll('.card-box'));
-        randomButton();
+        return randomButton();
     });
     document.getElementById('displayBtn').addEventListener('click', (e) => {
         e.preventDefault();
         removeElements(document.querySelectorAll('.card-box'));
-        displayButton();
+        return displayButton();
     
         //Proposed feature: set the value of the options on displayed cards to the value of the active deck
     });
     document.getElementById('removeBtn').addEventListener('click', (e) => {
-        deleteButton();
+        return deleteButton();
     });
     document.getElementById('createBtn').addEventListener('click', (e) => {
         e.preventDefault();
-        createButton();
+        return createButton();
     });
 
     document.getElementById('active-deck').addEventListener('change', (e) => {
         removeElements(document.querySelectorAll('.card-box'));
         if(document.getElementById('active-deck').value === 'netrunnerdb') {
-            return displayCards(randomCards(remoteCards, 50));
+            return displayCards(randomCards(remoteCards, 52));
         } else {
             return displayButton()};
     });
@@ -59,6 +67,9 @@ function searchButton() {
     const activeCards = cardsFromDeck(activeDeck);
     const filteredCards = filters(activeCards);
   
+    //resets form elements
+    document.getElementById('search').reset();
+
     //populate with new boxes containing filtered cards
     if(filteredCards.length > 100) {
         removeElements(document.querySelectorAll('.card-box'));
