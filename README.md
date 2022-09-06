@@ -1,4 +1,4 @@
-# NISEI Deck Builder (beta)
+# NISEI Deck Builder v1
 A single-page application to help players of NISEI/Netrunner build their decks. 
 
 ## Description
