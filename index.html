@@ -21,14 +21,15 @@
                     <p><a href="mailto:tim.loughrist@gmail.com">tim.loughrist@gmail.com</a></p>
                 </div>
                 <form id="decks">
-                    <div class="form-label">Deck:</div>
+                    <label for="active-deck">Deck:</label>
                     <select class="control" id="active-deck">
                         <option class="collection" value="netrunnerdb">NetrunnerDB</option>
                     </select>
                 </form>
+                <div class="spacer"></div>
                 <form id="search">
                     <div id="selectors">
-                        <div class="form-label">Faction:</div>
+                        <label for="active-faction">Faction:</label>
                         <select class="control" id="active-faction">
                             <option value="all" selected>All</option>
                             <option class="corp" value="corp">Corp</option>
@@ -43,7 +44,8 @@
                             <option class="runner" value="neutral-runner">--Neutral-Runner</option>
                             <option class="runner" value="shaper">--Shaper</option>
                         </select>
-                        <div class="form-label">Card Type:</div>
+                        <div class="spacer"></div>
+                        <label for="active-card-type">Card Type:</label>
                         <select class="control" id="active-card-type">
                             <option value="any" selected>Any</option>
                             <option class="corp" value="identity">Identities</option>
@@ -57,12 +59,12 @@
                             <option class="runner" value="program">Programs</option>
                             <option class="runner" value="event">Events</option>
                         </select>
-                        <div class="form-label">Card Name:</div>
+                        <div class="spacer"></div>
+                        <label for="card_name">Card Name:</label>
                         <input class="control" id="card_name" type="text"></input>
                     </div>
                     <div class="spacer"></div>
                     <hr>
-                    <div class="spacer"></div>
                     <div class="form-buttons">
                         <button class="control" id="searchBtn">search</button>
                         <button class="control" id="randomBtn">random</button>

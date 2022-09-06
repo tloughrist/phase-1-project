@@ -24,7 +24,7 @@ body {
     }
 
   #main {
-    display: flexbox;
+    display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     min-height: 50rem;
@@ -33,7 +33,7 @@ body {
 
     .sidebar {
       height: 100%;
-      width: 200;
+      width: 200px;
       position: fixed;
       left: 0;
       top: 6rem;
@@ -45,11 +45,36 @@ body {
         margin-bottom: -10px;
       }
 
-      .form-label {
+      #search {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        margin-left: 10px;
         margin-top: 10px;
+        margin-bottom: 2px;
+        color: rgb(67, 67, 67);
+      }
+
+      select {
+        margin-left: 10px;
+        width: 90%;
+        color: rgb(67, 67, 67);
+      }
+
+      input {
+        margin-left: 10px;
+        width: 86%;
+        color: rgb(67, 67, 67);
+      }
+
+      hr {
+        width: 90%;
       }
 
       .form-buttons {
+        padding-left: 10px;
         padding-top: 10px;
       }
 
@@ -80,14 +105,9 @@ body {
       padding-top: 6rem;
     }
 
-  footer {
-    justify-content: center;
-    margin-left: 10px;
-  }
-
 button {
   position: relative;
-  background-color: rgb(22, 22, 22);
+  background-color: rgb(67, 67, 67);
   border: none;
   border-radius: 5px;
   height: 1.5rem;
@@ -99,8 +119,8 @@ button {
 
 button:hover {
   background-color: whitesmoke;
-  border: #000000 solid 1px;
-  color: #000000;
+  border: rgb(67, 67, 67) solid 1px;
+  color: rgb(67, 67, 67);
 }
 
 .spacer {
