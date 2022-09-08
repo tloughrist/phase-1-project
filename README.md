@@ -15,7 +15,7 @@ The project is currently in beta and I'd appreciate any feedback!
 
 Click the image above to watch a video demonstrating the app.
 
-Check out a demo version without custom deck functionality [here](https://tloughrist.github.io/phase-1-project/).
+Check out a demo version without custom deck functionality [here](http://www.timloughristprojects.com/deck-builder/).
 
 ## Installation
 The current version of the app simulates a server for storing deck information using [JSON-server](https://www.npmjs.com/package/json-server).
