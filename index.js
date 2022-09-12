@@ -131,9 +131,9 @@ function createButton() {
 
     const newDeckCreateBtn = document.createElement('button');
     newDeckCreateBtn.id = 'createBtn';
-    newDeckCreateBtn.textContent = 'Submit Deck';
+    newDeckCreateBtn.textContent = 'submit deck';
     newDeckCreateBtn.classList.add('disposable');
-    newDeckCreateBtn.classList.add('.form-buttons');
+    newDeckCreateBtn.classList.add('new-form-buttons');
     newDeckCreateBtn.addEventListener('click', (e) => {
         newDeckCreateButton();
     });

@@ -78,6 +78,10 @@ body {
         padding-top: 10px;
       }
 
+      .new-form-buttons {
+        margin-left: 10px;
+      }
+
       .control {
         height: 1.5rem;
       }
