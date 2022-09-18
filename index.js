@@ -6,24 +6,14 @@ const localDecks = [];
 const remoteCards = [];
 
 const initialFetchDecks = fetchData('decks')
-.then((result) => {
-    return localDecks.push(...result);
-})
-.then(() => {
-    return localDecks.forEach((deck) => {
-        return addOption(deck, document.getElementById('active-deck'));
-    });
-});
+.then((result) => localDecks.push(...result))
+.then(() => localDecks.forEach((deck) => addOption(deck, document.getElementById('active-deck'))));
 
 const initialFetchCards = fetchData('remote')
-.then((result) => {
-    return remoteCards.push(...result)
-});
+.then((result) => remoteCards.push(...result));
 
 Promise.all([initialFetchCards, initialFetchDecks])
-.then(() => {
-    return displayCards(randomCards(remoteCards, 52));
-});
+.then(() => displayCards(randomCards(remoteCards, 52)));
 
 /**************************************************************************
 ****************ASSIGN INITIAL HTML ELEMENT EVENTLISTENERS*****************
@@ -54,10 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('active-deck').addEventListener('change', (e) => {
         removeElements(document.querySelectorAll('.card-box'));
-        if(document.getElementById('active-deck').value === 'netrunnerdb') {
-            return displayCards(randomCards(remoteCards, 52));
-        } else {
-            return displayButton()};
+        document.getElementById('active-deck').value === 'netrunnerdb' ? displayCards(randomCards(remoteCards, 52)) : displayButton();
     });
 });
 
@@ -120,7 +107,7 @@ function deleteButton() {
     //delete active deck
     return fetch(`http://localhost:3000/decks/${activeDeckId}`, {
         'method': 'DELETE'
-    })
+    });
 };
 
 function createButton() {
@@ -137,13 +124,12 @@ function createButton() {
     newDeckCreateBtn.textContent = 'submit deck';
     newDeckCreateBtn.classList.add('disposable');
     newDeckCreateBtn.classList.add('new-form-buttons');
-    newDeckCreateBtn.addEventListener('click', (e) => {
-        newDeckCreateButton();
-    });
+    newDeckCreateBtn.addEventListener('click', (e) => newDeckCreateButton());
 
     document.getElementById('create-form').appendChild(newDeckField);
     document.getElementById('create-form').appendChild(spacer);
     document.getElementById('create-form').appendChild(newDeckCreateBtn);
+    return;
 };
       
 function newDeckCreateButton() {
@@ -216,11 +202,7 @@ function searchFilter(cards) {
 
 function randomCards(cards, number) {
     let numberOfCards = -1;
-    if(cards.length < number) {
-        numberOfCards = cards.length;
-    } else {
-        numberOfCards = number;
-    }
+    cards.length < number ? numberOfCards = cards.length : numberOfCards = number;
     const randomCards = [];
     for(i = 1; i <= numberOfCards; i++) {
         let randNumber = randIndex(cards.length);
@@ -240,12 +222,10 @@ function randIndex(arrayLength) {
 
 function createCardBox(card) {
 
-    //build the cardBox itself
     const cardBox = document.createElement('div');
     cardBox.classList.add('card-box');
     cardBox.id = `${card.code}`;
 
-    //build the cardBox elements
     const cardImg = document.createElement('img');
     cardImg.classList.add('card-image');
     cardImg.src = `https://static.nrdbassets.com/v1/large/${card.code}.jpg`;
@@ -362,14 +342,13 @@ function genericFetch(url) {
         headers: {
             Accept: "application/json"
         }
-    }) 
+    }); 
 };
 
 /**************************************************************************
 ******************MISC. APP SPECIFIC FUNCTIONS*****************************
 **************************************************************************/
 
-//returns id of active deck
 function activeDeckId() {
     const activeDeckName = document.getElementById('active-deck').value;
     const deckLocation = localDecks;
@@ -382,7 +361,6 @@ function objectId(objectName, location) {
     return targetObj[0].id;
 };
 
-//gets the cards from the named deck
 function cardsFromDeck(deckName) {
     if(deckName === 'netrunnerdb') {
         return remoteCards;
@@ -392,24 +370,19 @@ function cardsFromDeck(deckName) {
     }
 };
 
-//behavior if too many cards are called for
 function tooManyAlert() {
     return alert("Too Many Cards to Display");
 };
     
-//displays all the cards from a given array of cards
 function displayCards(cards) {
     const cardArea = document.getElementById('cardblock');
-    return cards.forEach((e) => {
-        cardArea.appendChild(createCardBox(e));
-    });
+    return cards.forEach((e) => cardArea.appendChild(createCardBox(e)));
 };
 
 /**************************************************************************
 ******************GENERAL PURPOSED FUNCTIONS*******************************
 **************************************************************************/
 
-//add options to a select element
 function addOption(option, selectElement) {
     const newOption = document.createElement('option');
     newOption.value = option.name;
@@ -418,9 +391,6 @@ function addOption(option, selectElement) {
     return selectElement.appendChild(newOption);
 };
 
-//removes elements
 function removeElements(elementArray) {
-    return elementArray.forEach((e) => {
-        e.remove();
-    });
+    return elementArray.forEach((e) => e.remove());
 };
