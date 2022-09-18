@@ -2,14 +2,14 @@
 const localDecks = [];
 const remoteCards = [];
 
-//populates the localDecks, active deck select and remoteCards arrays
+//populates the localDecks, active deck select, and remoteCards arrays
 const initialFetchDecks = fetchData('decks')
 .then((result) => {
     return localDecks.push(...result);
 })
 .then(() => {
-    return localDecks.forEach((e) => {
-        return addOption(e, document.getElementById('active-deck'));
+    return localDecks.forEach((deck) => {
+        return addOption(deck, document.getElementById('active-deck'));
     });
 });
 
@@ -237,7 +237,7 @@ function tooManyAlert() {
     return alert("Too Many Cards to Display");
 };
     
-//removes current boxes
+//removes elements
 function removeElements(elementArray) {
     return elementArray.forEach((e) => {
         e.remove();
@@ -366,7 +366,7 @@ function randomCards(cards, number) {
     return randomCards;
 };
 
-//returns a random index from a given array provided the array
+//returns a random index from a given array
 function randIndex(arrayLength) {
     let randIndex = Math.floor(Math.random() * (arrayLength));
     return randIndex;
