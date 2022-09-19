@@ -1,6 +1,6 @@
-/**************************************************************************
-***************************INITIAL FETCHING AND POPULATION*****************
-**************************************************************************/
+/**********************************************************************************************
+********************************INITIAL FETCHING AND POPULATION********************************
+**********************************************************************************************/
 
 const localDecks = [];
 const remoteCards = [];
@@ -15,9 +15,9 @@ const initialFetchCards = fetchData('remote')
 Promise.all([initialFetchCards, initialFetchDecks])
 .then(() => displayCards(randomCards(remoteCards, 52)));
 
-/**************************************************************************
-****************ASSIGN INITIAL HTML ELEMENT EVENTLISTENERS*****************
-**************************************************************************/
+/**********************************************************************************************
+*********************ASSIGN INITIAL HTML ELEMENT EVENTLISTENERS********************************
+**********************************************************************************************/
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('searchBtn').addEventListener('click', (e) => {
@@ -35,9 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         removeElements(document.querySelectorAll('.card-box'));
         return displayButton();
     });
-    document.getElementById('removeBtn').addEventListener('click', (e) => {
-        return deleteButton();
-    });
+    document.getElementById('removeBtn').addEventListener('click', (e) => deleteButton());
     document.getElementById('createBtn').addEventListener('click', (e) => {
         e.preventDefault();
         return createButton();
@@ -48,24 +46,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/**************************************************************************
-********SEARCH/RANDOM/DISPLAY/DELETE/CREATE FUNCTIONALITY******************
-**************************************************************************/
+/**********************************************************************************************
+*************SEARCH/RANDOM/DISPLAY/DELETE/CREATE FUNCTIONALITY*********************************
+**********************************************************************************************/
 
 function searchButton() {
-  
-    //get filtered cards
     const activeDeck = document.getElementById('active-deck').value;
     const activeCards = cardsFromDeck(activeDeck);
     const filteredCards = filters(activeCards);
-  
-    //resets form elements
     document.getElementById('search').reset();
-
-    //populate with new boxes containing filtered cards
     if(filteredCards.length > 100) {
         removeElements(document.querySelectorAll('.card-box'));
-        displayCards(randomCards(filteredCards, 50));
+        displayCards(randomCards(filteredCards, 52));
         return tooManyAlert();
     } else {
         return displayCards(filteredCards);
@@ -73,23 +65,15 @@ function searchButton() {
 };
 
 function randomButton() {
-    
-    //get filtered cards
     const activeDeck = document.getElementById('active-deck').value;
     const activeCards = cardsFromDeck(activeDeck);
     const filteredCards = filters(activeCards);
-    
-    //populate with new boxes containing filtered cards
     return displayCards(randomCards(filteredCards, 1));
 };
 
 function displayButton() {
-  
-    //get cards
     const activeDeck = document.getElementById('active-deck').value;
     const activeCards = cardsFromDeck(activeDeck);
-
-    //populate with new boxes containing filtered cards
     if(activeCards.length > 100) {
         randomButton();
         return tooManyAlert();
@@ -99,14 +83,10 @@ function displayButton() {
 };
 
 function deleteButton() {
-
-    //get active deck Id
     const activeDeck = document.getElementById('active-deck').value;
     const activeDeckId = objectId(activeDeck, localDecks);
-    
-    //delete active deck
     return fetch(`http://localhost:3000/decks/${activeDeckId}`, {
-        'method': 'DELETE'
+        method: 'DELETE'
     });
 };
 
@@ -134,27 +114,21 @@ function createButton() {
       
 function newDeckCreateButton() {
     const newDeckName = document.getElementById('deck-input').value
-    const emptyDeck = {
-        'name': newDeckName,
-        'value': newDeckName,
-        'cards': []
-    };
+    const emptyDeck = {name: newDeckName, value: newDeckName, cards: []};
     return fetch("http://localhost:3000/decks/", {
-        'method': 'POST',
-        'headers': {
+        method: 'POST',
+        headers: {
             "Content-Type": "application/json",
             Accept: "application/json"
         },
-        'body': JSON.stringify(emptyDeck)
+        body: JSON.stringify(emptyDeck)
     })
-    .catch((error) => {
-        console.error('Error posting new deck:', error);
-    });
+    .catch((error) => console.error('Error posting new deck:', error));
 };
 
-/**************************************************************************
-*************************************FILTER FUNCTIONALITY******************
-**************************************************************************/
+/**********************************************************************************************
+*************************************FILTER FUNCTIONALITY**************************************
+**********************************************************************************************/
 
 function filters(cards) {
     return searchFilter(cardTypeFilter(factionFilter(cards)));
@@ -165,60 +139,40 @@ function factionFilter(cards) {
     if(activeFaction === 'all') {
         return cards;
     } else if (activeFaction === 'corp' || activeFaction === 'runner') {
-        return cards.filter(function (el) {
-            return el.side_code === `${activeFaction}`;
-        });
+        return cards.filter((el) => el.side_code === `${activeFaction}`);
     } else {
-        return cards.filter(function (el) {
-            return el.faction_code === `${activeFaction}`
-        });
+        return cards.filter((el) => el.faction_code === `${activeFaction}`);
     }
 };
 
 function cardTypeFilter(cards) {
     const activeCardType = document.getElementById('active-card-type').value;
-    if(activeCardType === 'any') {
-        return cards;
-    } else {
-        return cards.filter(function (el) {
-            return el.type_code === `${activeCardType}`;
-        });
-    }
+    return activeCardType === 'any' ? cards : cards.filter((el) => el.type_code === `${activeCardType}`);
 };
 
 function searchFilter(cards) {
-    if(document.querySelector('#card_name').value === undefined) {
-        return cards;
-    } else {
-        return cards.filter(function (el) {
-            return el.title.toLowerCase().includes(document.querySelector('#card_name').value.toLowerCase());
-        });
-    }
+    const cardName = document.querySelector('#card_name').value;
+    return cardName === undefined ? cards : cards.filter((el) => el.title.toLowerCase().includes(cardName.toLowerCase()));
 };
 
-/**************************************************************************
-**************RANDOM CARD FUNCTIONS****************************************
-**************************************************************************/
+/**********************************************************************************************
+*************************RANDOM CARD FUNCTIONALITY*********************************************
+**********************************************************************************************/
 
 function randomCards(cards, number) {
     let numberOfCards = -1;
     cards.length < number ? numberOfCards = cards.length : numberOfCards = number;
     const randomCards = [];
     for(i = 1; i <= numberOfCards; i++) {
-        let randNumber = randIndex(cards.length);
+        let randNumber = Math.floor(Math.random() * (cards.length));
         randomCards.push(cards[randNumber]);
     };
     return randomCards;
 };
 
-function randIndex(arrayLength) {
-    let randIndex = Math.floor(Math.random() * (arrayLength));
-    return randIndex;
-};
-
-/**************************************************************************
-********************CREATES THE CARDBOXES FOR DISPLAY**********************
-**************************************************************************/
+/**********************************************************************************************
+*******************************CREATES THE CARDBOXES FOR DISPLAY*******************************
+**********************************************************************************************/
 
 function createCardBox(card) {
 
@@ -275,9 +229,9 @@ function createCardBox(card) {
     return cardBox;
 };
 
-/**************************************************************************
-********************ADD CARD/REMOVE CARD FUNCTIONALTY**********************
-**************************************************************************/
+/**********************************************************************************************
+**************************ADD CARD/REMOVE CARD FUNCTIONALTY************************************
+**********************************************************************************************/
 
 function addButton(card, deckName) {
     const deckCards = cardsFromDeck(deckName);
@@ -285,13 +239,13 @@ function addButton(card, deckName) {
     deckCards.push(card);
 
     return fetch(`http://localhost:3000/decks/${deckId}`, {
-        'method': 'PATCH',
-        'headers': {
-        "Content-Type": "application/json",
-        Accept: "application/json"
+        method: 'PATCH',
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
         },
-        'body': JSON.stringify({
-            "cards": deckCards
+        body: JSON.stringify({
+            cards: deckCards
         })
     });
 };
@@ -303,20 +257,20 @@ function removeButton(card, deckName) {
     deckCards.splice(cardIndex, 1);
     document.getElementById(`${card.code}`).remove();
     return fetch(`http://localhost:3000/decks/${deckId}`, {
-        'method': 'PATCH',
-        'headers': {
-        "Content-Type": "application/json",
-        Accept: "application/json"
+        method: 'PATCH',
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
         },
-        'body': JSON.stringify({
-            "cards": deckCards
+        body: JSON.stringify({
+            cards: deckCards
         })
     });
 };
 
-/**************************************************************************
-**********************************FETCH GET FUNCTIONS**********************
-**************************************************************************/
+/**********************************************************************************************
+**********************************FETCH GET FUNCTIONS******************************************
+**********************************************************************************************/
 
 function fetchData(dataSource) {
     if(dataSource === 'remote') {
@@ -345,9 +299,9 @@ function genericFetch(url) {
     }); 
 };
 
-/**************************************************************************
-******************MISC. APP SPECIFIC FUNCTIONS*****************************
-**************************************************************************/
+/**********************************************************************************************
+*****************************MISC. APP SPECIFIC FUNCTIONS**************************************
+**********************************************************************************************/
 
 function activeDeckId() {
     const activeDeckName = document.getElementById('active-deck').value;
@@ -355,7 +309,6 @@ function activeDeckId() {
     return objectId(activeDeckName, deckLocation);
 };
 
-//returns id of current deck
 function objectId(objectName, location) {
     const targetObj = location.filter((e) => e.name === objectName);
     return targetObj[0].id;
@@ -379,9 +332,9 @@ function displayCards(cards) {
     return cards.forEach((e) => cardArea.appendChild(createCardBox(e)));
 };
 
-/**************************************************************************
-******************GENERAL PURPOSED FUNCTIONS*******************************
-**************************************************************************/
+/**********************************************************************************************
+*****************************GENERAL PURPOSED FUNCTIONS****************************************
+**********************************************************************************************/
 
 function addOption(option, selectElement) {
     const newOption = document.createElement('option');
