@@ -129,7 +129,7 @@ function newDeckCreateButton() {
 };
 
 /**********************************************************************************************
-*************************************FILTER FUNCTIONALITY**************************************
+******************************FILTER/RANDOM FUNCTIONALITY**************************************
 **********************************************************************************************/
 
 function filters(cards) {
@@ -156,10 +156,6 @@ function searchFilter(cards) {
     const cardName = document.querySelector('#card_name').value;
     return cardName === undefined ? cards : cards.filter((el) => el.title.toLowerCase().includes(cardName.toLowerCase()));
 };
-
-/**********************************************************************************************
-*************************RANDOM CARD FUNCTIONALITY*********************************************
-**********************************************************************************************/
 
 function randomCards(cards, number) {
     let numberOfCards = -1;
@@ -239,7 +235,6 @@ function addButton(card, deckName) {
     const deckCards = cardsFromDeck(deckName);
     const deckId = objectId(deckName, localDecks);
     deckCards.push(card);
-
     return fetch(`http://localhost:3000/decks/${deckId}`, {
         method: 'PATCH',
         headers: {
