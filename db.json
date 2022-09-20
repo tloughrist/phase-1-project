@@ -958,6 +958,26 @@
           "title": "The Maker's Eye",
           "type_code": "event",
           "uniqueness": false
+        },
+        {
+          "code": "11038",
+          "deck_limit": 1,
+          "faction_code": "weyland-consortium",
+          "faction_cost": 0,
+          "flavor": "Strength makes leaders.",
+          "influence_limit": 12,
+          "keywords": "Megacorp",
+          "minimum_deck_size": 40,
+          "pack_code": "bm",
+          "position": 38,
+          "quantity": 3,
+          "side_code": "corp",
+          "stripped_text": "The first time each turn an encounter with an advanced piece of ice ends, do 1 meat damage.",
+          "stripped_title": "Weyland Consortium: Builder of Nations",
+          "text": "The first time each turn an encounter with an advanced piece of ice ends, do 1 meat damage.",
+          "title": "Weyland Consortium: Builder of Nations",
+          "type_code": "identity",
+          "uniqueness": false
         }
       ],
       "id": 2

@@ -19,7 +19,7 @@ Promise.all([initialFetchCards, initialFetchDecks])
 *********************ASSIGN INITIAL HTML ELEMENT EVENTLISTENERS********************************
 **********************************************************************************************/
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {    
     document.getElementById('searchBtn').addEventListener('click', (e) => {
         e.preventDefault();
         removeElements(document.querySelectorAll('.card-box'));
@@ -58,7 +58,7 @@ function searchButton() {
     if(filteredCards.length > 100) {
         removeElements(document.querySelectorAll('.card-box'));
         displayCards(randomCards(filteredCards, 52));
-        return tooManyAlert();
+        return alert("Too Many Cards to Display");
     } else {
         return displayCards(filteredCards);
     }
@@ -76,7 +76,7 @@ function displayButton() {
     const activeCards = cardsFromDeck(activeDeck);
     if(activeCards.length > 100) {
         randomButton();
-        return tooManyAlert();
+        return alert("Too Many Cards to Display");
     } else {
         return displayCards(activeCards);
     }
@@ -188,7 +188,7 @@ function createCardBox(card) {
     cardName.textContent = `${card.title}`;
 
     const faction = document.createElement('p');
-    faction.textContent = `faction: ${card.faction_code}`;
+    faction.innerHTML = `<b>faction:</b> ${card.faction_code}`;
 
     const horLine = document.createElement('hr');
     horLine.classList.add('demarcation');
@@ -321,10 +321,6 @@ function cardsFromDeck(deckName) {
         const deck = localDecks.filter((e) => e.name === deckName);
         return deck[0].cards;
     }
-};
-
-function tooManyAlert() {
-    return alert("Too Many Cards to Display");
 };
     
 function displayCards(cards) {
