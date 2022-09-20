@@ -7,7 +7,7 @@ const remoteCards = [];
 
 const initialFetchDecks = fetchData('decks')
 .then((result) => localDecks.push(...result))
-.then(() => localDecks.forEach((deck) => addOption(deck, document.getElementById('active-deck'))));
+.then(() => localDecks.map((deck) => addOption(deck, document.getElementById('active-deck'))));
 
 const initialFetchCards = fetchData('remote')
 .then((result) => remoteCards.push(...result));
@@ -195,7 +195,7 @@ function createCardBox(card) {
 
     const modifyDeckSelect = document.createElement('select');
     modifyDeckSelect.id = 'collection-add';
-    localDecks.forEach((e) => addOption(e, modifyDeckSelect));
+    localDecks.map((e) => addOption(e, modifyDeckSelect));
     const activeDeck = localDecks.filter((e) => e.name === document.getElementById('active-deck').value);
     const activeDeckIndex = localDecks.indexOf(activeDeck[0]);
     modifyDeckSelect.selectedIndex = activeDeckIndex;
@@ -325,7 +325,7 @@ function cardsFromDeck(deckName) {
     
 function displayCards(cards) {
     const cardArea = document.getElementById('cardblock');
-    return cards.forEach((e) => cardArea.appendChild(createCardBox(e)));
+    return cards.map((e) => cardArea.appendChild(createCardBox(e)));
 };
 
 /**********************************************************************************************
