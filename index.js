@@ -58,7 +58,8 @@ function searchButton() {
     if(filteredCards.length > 100) {
         removeElements(document.querySelectorAll('.card-box'));
         displayCards(randomCards(filteredCards, 52));
-        return issueAlert(alert, 'Too Many Cards to Display');
+        issueAlert(console.log, filteredCards.length); //*********CALLBACK FUNCTION************
+        return issueAlert(alert, 'Too Many Cards to Display'); //*********CALLBACK FUNCTION************
     } else {
         return displayCards(filteredCards);
     }
@@ -76,7 +77,8 @@ function displayButton() {
     const activeCards = cardsFromDeck(activeDeck);
     if(activeCards.length > 100) {
         randomButton();
-        return issueAlert(alert, 'Too Many Cards to Display');
+        issueAlert(console.log, activeCards.length); //*********CALLBACK FUNCTION************
+        return issueAlert(alert, 'Too Many Cards to Display'); //*********CALLBACK FUNCTION************
     } else {
         return displayCards(activeCards);
     }
@@ -344,6 +346,6 @@ function removeElements(elementArray) {
     return elementArray.forEach((e) => e.remove());
 };
 
-function issueAlert(alertType, text) {
-    return alertType(text);
+function issueAlert(alertType, alertText) {
+    return alertType(alertText);
 }
