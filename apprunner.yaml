@@ -6,3 +6,5 @@ build:
       - npm install
 run:
   command: npm start
+  network:
+    port: 3000
