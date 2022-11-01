@@ -1,0 +1,8 @@
+version: 1.0
+runtime: node16
+build:
+  commands:
+    build:
+      - npm install
+run:
+  command: npm start
